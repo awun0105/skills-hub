@@ -1,6 +1,6 @@
 # --- Git clone riêng: ghi trong repos.lock, cài lại bằng bin/repos-lock.sh restore
 /repos/
-/skills/beautiful-html-templates/
+/skills/deck-kit/
 /skills/frontend-slides/
 
 # --- Cài qua `npx skills`: ghi trong .skill-lock.json, bin/install.sh cài lại từ nguồn

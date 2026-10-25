@@ -10,5 +10,5 @@ repos/gstack https://github.com/garrytan/gstack.git f67c478f05d8e0b39339599ad11c
 repos/OpenSpec https://github.com/Fission-AI/OpenSpec.git 9111a7654d7800391459431fff4eaf66e33a3d2e
 repos/scientific-agent-skills https://github.com/K-Dense-AI/scientific-agent-skills.git 92ace75ac21efe19a620434e0ca4e356081fe807
 repos/superpowers https://github.com/obra/superpowers.git 8ca22dba9a94f28898bbce59f2537ff4d87c747d
-skills/beautiful-html-templates https://github.com/awun0105/beautiful-html-templates.git 72dab0e180b557f15de2fb69faef880ef8b341bb
+skills/deck-kit https://github.com/awun0105/deck-kit.git 01f67e6d42e7665e538d04502ddfa969a43805ca
 skills/frontend-slides https://github.com/awun0105/frontend-slides.git 9906a34d640d2111f724544cbc50f7f130569ae1
