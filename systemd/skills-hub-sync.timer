@@ -1,0 +1,10 @@
+[Unit]
+Description=Đồng bộ skills-hub mỗi ngày
+
+[Timer]
+OnCalendar=*-*-* 21:00
+OnStartupSec=15min
+Persistent=true
+
+[Install]
+WantedBy=timers.target

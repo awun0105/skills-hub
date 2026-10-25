@@ -1,0 +1,48 @@
+# --- Git clone riêng: ghi trong repos.lock, cài lại bằng bin/repos-lock.sh restore
+/repos/
+/skills/beautiful-html-templates/
+/skills/frontend-slides/
+
+# --- Cài qua `npx skills`: ghi trong .skill-lock.json, bin/install.sh cài lại từ nguồn
+# (bin/sync-hub.sh tự thêm tên mới vào khối này)
+# BEGIN skill-lock
+/skills/archify/
+/skills/architecture-diagram/
+/skills/supabase/
+/skills/supabase-postgres-best-practices/
+/skills/svg-diagram/
+# END skill-lock
+
+# --- Do app/tool tự cài, không rõ license: giữ trên máy, không phát hành lại
+/skills/colab-operator/
+/skills/computer-use/
+/skills/hf-cli/
+/skills/orca-cli/
+/skills/orca-linear/
+/skills/orca-per-workspace-env/
+/skills/orchestration/
+/skills/reverse-engineer-anything/
+/skills/use-railway/
+# Do `gstack setup` sinh ra theo từng máy
+/skills/_gstack-command/
+
+# --- Link vào extension của Gemini (extension tự quản lý)
+/skills/a11y-debugging
+/skills/chrome-devtools
+/skills/chrome-devtools-cli
+/skills/cookie-debugging
+/skills/debug-optimize-lcp
+/skills/graphify
+/skills/lab-breakdown-guide
+/skills/memory-leak-debugging
+/skills/troubleshooting
+
+# --- Phụ thuộc, rác build, bí mật
+node_modules/
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+.env
+.env.*
+!.env.example

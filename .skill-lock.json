@@ -1,0 +1,53 @@
+{
+  "version": 3,
+  "skills": {
+    "supabase": {
+      "source": "supabase/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/supabase/agent-skills.git",
+      "skillPath": "skills/supabase/SKILL.md",
+      "skillFolderHash": "57b975708a53ce7a56df25822871b71da6d9312a",
+      "pluginName": "supabase",
+      "installedAt": "2026-10-09T12:24:35.933Z",
+      "updatedAt": "2026-10-09T12:24:35.933Z"
+    },
+    "supabase-postgres-best-practices": {
+      "source": "supabase/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/supabase/agent-skills.git",
+      "skillPath": "skills/supabase-postgres-best-practices/SKILL.md",
+      "skillFolderHash": "27bde25111c4cd5e6f803fc9db5fbffe27bb26cf",
+      "pluginName": "postgres-best-practices",
+      "installedAt": "2026-10-09T12:24:35.934Z",
+      "updatedAt": "2026-10-09T12:24:35.934Z"
+    },
+    "architecture-diagram": {
+      "source": "Cocoon-AI/architecture-diagram-generator",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/Cocoon-AI/architecture-diagram-generator.git",
+      "skillPath": "architecture-diagram/SKILL.md",
+      "skillFolderHash": "07b4fbe3d0dfc307deafd29038e96b247c6d7d27",
+      "installedAt": "2026-10-25T06:24:08.885Z",
+      "updatedAt": "2026-10-25T06:24:08.885Z"
+    },
+    "archify": {
+      "source": "tt-a1i/archify",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/tt-a1i/archify.git",
+      "skillPath": "archify/SKILL.md",
+      "skillFolderHash": "39069dd190f574064fe410aa3af1b6dfd98a522c",
+      "installedAt": "2026-10-25T06:24:21.668Z",
+      "updatedAt": "2026-10-25T06:24:21.668Z"
+    },
+    "svg-diagram": {
+      "source": "tielur/claude-code-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/tielur/claude-code-skills.git",
+      "skillPath": "svg-diagram/skills/svg-diagram/SKILL.md",
+      "skillFolderHash": "9534def9189166bdf2f4e149932c600384410fe9",
+      "installedAt": "2026-10-25T06:24:26.110Z",
+      "updatedAt": "2026-10-25T06:24:26.110Z"
+    }
+  },
+  "dismissed": {}
+}

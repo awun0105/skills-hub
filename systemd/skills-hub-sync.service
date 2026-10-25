@@ -1,0 +1,6 @@
+[Unit]
+Description=Gom skill về ~/.agents/skills, commit và push lên GitHub
+
+[Service]
+Type=oneshot
+ExecStart=%h/.agents/bin/sync-hub.sh
