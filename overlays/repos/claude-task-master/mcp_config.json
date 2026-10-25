@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "taskmaster": {
+      "command": "task-master-mcp"
+    }
+  }
+}

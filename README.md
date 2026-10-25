@@ -39,6 +39,7 @@ Repo này dùng **đường dẫn tương đối** (`skills/x -> ../repos/...`) 
 │   ├── consolidate-skills.sh   ← tìm và gom skill nằm rời rạc về hub
 │   ├── repos-lock.sh           ← ghi / khôi phục danh sách git clone
 │   └── sync-hub.sh             ← gom + commit + push (timer gọi mỗi ngày)
+├── overlays/      ← file thêm vào repo của người khác, được chép đè sau khi clone
 ├── systemd/       ← timer cho sync-hub.sh
 ├── repos.lock     ← danh sách repo: đường dẫn, URL, commit
 └── .skill-lock.json  ← file của `npx skills`, đừng sửa tay
@@ -128,7 +129,11 @@ Những skill này **vẫn có trên máy chủ repo**, chỉ không được ph
 ## Những điều cần nhớ
 
 1. **Đừng gộp skill `per-host`.** Hiện có `gstack`, `graphify` và `connect-chrome`. Mỗi agent có một bản riêng là có chủ đích, ví dụ bản Codex gọi `spawn_agent` còn bản Claude gọi Agent tool. Muốn thêm tên vào danh sách này thì đặt biến `PER_HOST`.
-2. **Thay đổi chưa commit trong `repos/` không đi theo sang máy khác.** `repos.lock` chỉ ghi commit. Muốn giữ bản sửa thì fork repo đó.
+2. **Thay đổi chưa commit trong `repos/` không đi theo sang máy khác.** `repos.lock` chỉ ghi commit. Có hai cách giữ phần bạn thêm vào:
+   - Repo là fork của bạn: commit và push trong chính repo đó.
+   - Repo của người khác: đặt file vào `overlays/<đường dẫn repo>/...`. `repos-lock.sh restore` sẽ chép đè chúng vào sau khi clone. Hiện có `plugin.json` của OpenSpec và skill `taskmaster` cùng plugin của claude-task-master.
+
+   `repos-lock.sh save` sẽ cảnh báo nếu một file chưa commit không có bản giống hệt trong `overlays/`.
 3. **Không commit bí mật.** `.gitignore` đã chặn `.env`, nhưng trước khi push bạn vẫn nên liếc qua `git status`.
 4. **Skill chạy với toàn quyền của agent.** Trước khi cài skill lạ, xem điểm đánh giá bảo mật trên `skills.sh/<chủ>/<repo>`.
 5. **Skill cấp project** (`.claude/skills/` bên trong một repo dự án) để nguyên ở đó, không gom về hub.
