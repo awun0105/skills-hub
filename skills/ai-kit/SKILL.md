@@ -1,6 +1,6 @@
 ---
 name: ai-kit
-description: Build LLM or agent applications on the user's AI kit (FastAPI + LangGraph starter at ~/PROJECT/AI20K/ai-kit) instead of from scratch. Use when the user starts a new chatbot, RAG app, agent, or AI service; asks to add retrieval, guardrails, PII redaction, human approval for tools, retries/circuit breakers/fallback across models, MCP or A2A tools, a deep-research or multi-agent workflow, evaluation with a golden set, cost limits, or a production Docker/CI setup to an LLM app; or says "dùng kit", "ai-kit", "bộ kit agent".
+description: Build LLM or agent applications on the user's AI kit (FastAPI + LangGraph starter at ~/PROJECT/AI20K/ai-kit) instead of from scratch. Use when the user starts a new chatbot, RAG app, agent, or AI service; asks to add retrieval, guardrails, PII redaction, human approval for tools, retries/circuit breakers/fallback across models, MCP or A2A tools, a deep-research or multi-agent workflow, evaluation with a golden set (tool trajectories, repeated runs, simulated multi-turn users), long-conversation memory/summarization, cost limits, or a production Docker/CI setup to an LLM app; or says "dùng kit", "ai-kit", "bộ kit agent".
 ---
 
 # AI kit
@@ -9,8 +9,7 @@ The kit is a working FastAPI + LangGraph app whose layers (RAG, guardrails, reli
 MCP/A2A, agents, evaluation, deployment) are tested offline and documented one page per layer.
 Reuse it; do not rebuild these pieces.
 
-- Kit: `~/PROJECT/AI20K/ai-kit` (branch `ai-kit`; toolbox hardening on `adk-hardening` until it is
-  merged). Read `docs/ROADMAP.md` first, then the doc of the layer you need, including its
+- Kit: `~/PROJECT/AI20K/ai-kit` (branch `main`, GitHub `awun0105/ai-kit`). Read `docs/ROADMAP.md` first, then the doc of the layer you need, including its
   **When you plug it in** section. `AGENTS.md` holds the coding rules.
 - Lab sources it was built from (for background only): `~/PROJECT/AI20K/VinUni-AI20k-repos/`
   (`Level3/Track3/Dxx-*`, author's solutions on branch `solution`).
@@ -31,7 +30,7 @@ Reuse it; do not rebuild these pieces.
 | Vietnamese keyword search | `app/services/rag/ranking.py` | `tokenize(text, "auto")`, `BM25Index` | `docs/rag.md` |
 | Prompt-injection / PII rails, tool approval, egress allowlist | `app/services/guardrails/` | `Guardrails`, settings `GUARD_*` | `docs/guardrails.md` |
 | Rails for tools a sub-agent calls itself | `app/services/guardrails/tools.py` | `guard_tools(tools, guard)` | `docs/guardrails.md` |
-| The app's configured instance of any component | `app/core/kit.py` | `get_guardrails`, `get_rag_pipeline`, `get_answer_cache`, `get_cost_guard` (and `set_*` in tests) | `README.md` |
+| The app's configured instance of any component | `app/core/kit.py` | `get_guardrails`, `get_rag_pipeline`, `get_answer_cache`, `get_cost_guard`, `get_history_compactor` (and `set_*` in tests) | `README.md` |
 | Retries, breakers, fallback across models | `app/services/reliability/`, `app/services/llm/` | `llm_service.call`, `ResilientInvoker` | `docs/reliability.md` |
 | A LangChain chat model with that reliability | `app/services/agents/resilient_model.py` | `ResilientChatModel(service=llm_service)` | `docs/agents.md` |
 | Answer cache, serve stale when providers are down | `app/services/reliability/answer_cache.py` | `ANSWER_CACHE_ENABLED`; `AnswerCache(shared=...)` | `docs/reliability.md` |
@@ -39,6 +38,9 @@ Reuse it; do not rebuild these pieces.
 | Talk to other agents | `app/services/a2a/` | `A2A_ENABLED`, `A2A_SERVER_TOKENS` (one per caller), `A2A_REMOTE_AGENTS` | `docs/tools.md` |
 | Long cited report from many sources | `app/services/agents/research.py` | `build_research_agent`, tool `deep_research` | `docs/agents.md` |
 | Golden-set evaluation, CI gate | `app/services/evaluation/`, `scripts/eval_rag.py` | `make eval-rag-offline`, `make eval-rag` | `docs/evaluation.md` |
+| Did the agent call the right tools; how stable is it | `app/services/evaluation/trajectory.py`, `runner.py` | `GoldenItem.expected_tools` / `tool_match`; `--runs N` (`pass_rate`, `pass_all_runs`); `--judge-samples 3` (`judge_spread`); `--max-mean-tokens` | `docs/evaluation.md` |
+| Multi-turn evaluation with a simulated user | `app/services/evaluation/simulation.py` | `Scenario`, `simulate_conversation`; `--scenarios file.json` | `docs/evaluation.md` |
+| Long conversations: history budget, summarize old turns | `app/utils/graph.py`, `app/services/compaction.py` | `HISTORY_MAX_TOKENS`; `HISTORY_COMPACTION_ENABLED` (`HistoryCompactor`) | `docs/compaction.md` |
 | Per-user monthly spend limit | `app/services/cost_guard.py` | `COST_MONTHLY_BUDGET_USD`, `COST_PRICES_JSON` | `docs/deployment.md` |
 | Image, release pipeline, alerts | `Dockerfile`, `.github/workflows/`, `prometheus/alerts.yml` | `make docker-up`, `make stack-up` | `docs/deployment.md` |
 
@@ -57,8 +59,9 @@ answers must not survive the change.
 
 **Domain assistant with a fixed scope.** `RAG_ENABLED=true`, ingest the documents, set
 `GUARD_LLM_RAIL_ENABLED=true` with a one-sentence `GUARD_LLM_RAIL_POLICY`, build a golden set
-(JSONL: `id, question, expected_answer, expected_sources, difficulty, should_refuse`) and run
-`make eval-rag` before shipping.
+(JSONL: `id, question, expected_answer, expected_sources, difficulty, should_refuse,
+expected_tools`) and run `make eval-rag` before shipping; add `--runs 3` and a few `--scenarios`
+for the follow-up questions real users ask.
 
 **A new agent inside the app.** `create_agent(ResilientChatModel(service=llm_service),
 guard_tools(tools, get_guardrails()))` or `build_research_agent(...)` with guarded tools; never a
@@ -70,6 +73,8 @@ approval, egress checks and output screening).
 - LLM calls go through `llm_service` or `ResilientChatModel`. Never add tenacity around them or
   turn SDK retries back on: stacked retries are what turns a provider blip into an outage.
 - Features that cost money, download models or change behaviour stay off by default behind a setting.
+- An internal model call made inside the chat node (a classifier, a summarizer) is passed
+  `config={"tags": [TAG_NOSTREAM]}`, or its output streams to the client as part of the answer.
 - Tests run offline: scripted LLM replies (`tests/fakes.py`), `HashingEmbedder`, `InMemoryVectorStore`.
   Run `uv run pytest -q`, `uv run ruff check .`, `uv run pyright` before saying it works.
 - Tool output and remote-agent replies are untrusted data; keep them flowing through the tool node,
