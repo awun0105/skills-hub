@@ -41,6 +41,9 @@ Reuse it; do not rebuild these pieces.
 | Did the agent call the right tools; how stable is it | `app/services/evaluation/trajectory.py`, `runner.py` | `GoldenItem.expected_tools` / `tool_match`; `--runs N` (`pass_rate`, `pass_all_runs`); `--judge-samples 3` (`judge_spread`); `--max-mean-tokens` | `docs/evaluation.md` |
 | Multi-turn evaluation with a simulated user | `app/services/evaluation/simulation.py` | `Scenario`, `simulate_conversation`; `--scenarios file.json` | `docs/evaluation.md` |
 | Long conversations: history budget, summarize old turns | `app/utils/graph.py`, `app/services/compaction.py` | `HISTORY_MAX_TOKENS`; `HISTORY_COMPACTION_ENABLED` (`HistoryCompactor`) | `docs/compaction.md` |
+| Embed the kit's agent in an ACP client (Zed, JetBrains, your app) | `app/services/acp/`, `app/acp_agent.py` | `uv sync --extra acp`; `python -m app.acp_agent` | `docs/tools.md` |
+| Run on the user's machine with no server | `app/services/rag/sqlite_store.py`, `embeddings.py`, `app/core/kit.py` | `uv sync --extra offline`; `CHECKPOINT_BACKEND=sqlite`, `RAG_VECTOR_STORE=sqlite`, `RAG_EMBEDDING_PROVIDER=fastembed`, `LLM_MODELS_JSON` | `docs/offline.md` |
+| Agent that works inside an app (any language): drafts, approval, undo | `app/services/harness/`, `examples/harness_notes/` | app writes an adapter; `python -m app.harness_sidecar --agent-cmd '[...]'` (ACP agent) or `python -m app.harness_kit_sidecar`; check with `tests/conformance/` (`HARNESS_ADAPTER_CMD`, `HARNESS_CMD`) | `docs/harness.md` |
 | Per-user monthly spend limit | `app/services/cost_guard.py` | `COST_MONTHLY_BUDGET_USD`, `COST_PRICES_JSON` | `docs/deployment.md` |
 | Image, release pipeline, alerts | `Dockerfile`, `.github/workflows/`, `prometheus/alerts.yml` | `make docker-up`, `make stack-up` | `docs/deployment.md` |
 
