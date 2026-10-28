@@ -6,7 +6,7 @@ repos/claude-task-master https://github.com/eyaltoledano/claude-task-master.git 
 repos/cloudflare-skills https://github.com/cloudflare/skills.git 41e0d19858946d18af9ee2c2feebbe2e11d829ff
 repos/ECC https://github.com/affaan-m/ECC.git ef648e01899ba3e8dc6371642deaaf64b4477775
 repos/gsd-core https://github.com/open-gsd/gsd-core.git 83aba44627ba43aff77588894f7b81a9a7437e75
-repos/gstack https://github.com/garrytan/gstack.git 39b06e22afeabe25d73f5b7617427cc3f7dc2b68
+repos/gstack https://github.com/garrytan/gstack.git 9e3308f65adf547b7e4776e5ed22467a2649d2ee
 repos/OpenSpec https://github.com/Fission-AI/OpenSpec.git 9111a7654d7800391459431fff4eaf66e33a3d2e
 repos/scientific-agent-skills https://github.com/K-Dense-AI/scientific-agent-skills.git 92ace75ac21efe19a620434e0ca4e356081fe807
 repos/superpowers https://github.com/obra/superpowers.git 8ca22dba9a94f28898bbce59f2537ff4d87c747d
