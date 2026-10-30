@@ -1,0 +1,4 @@
+interface:
+  display_name: "Creative Problem Solving"
+  short_description: "Tạo hướng giải mới với dự đoán và phép kiểm chứng"
+  default_prompt: "Hãy dùng $creative-problem-solving để tạo hướng giải cụ thể cho bài toán này, nêu dự đoán và cách kiểm chứng phù hợp."
