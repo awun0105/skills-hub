@@ -1,0 +1,4 @@
+interface:
+  display_name: "Inquiry and Problem Framing"
+  short_description: "Khám phá câu hỏi đáng tìm hiểu và định hình bài toán"
+  default_prompt: "Hãy dùng $inquiry-and-problem-framing để tìm câu hỏi đáng tìm hiểu từ chủ đề này, xác định phạm vi và bước khảo sát đầu tiên."

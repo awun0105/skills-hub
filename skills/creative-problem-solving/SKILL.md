@@ -2,7 +2,7 @@
 name: creative-problem-solving
 description: Tạo và phát triển hướng giải khi bài toán bế tắc, cách hiện tại chưa đáp ứng mục tiêu hoặc người dùng muốn một cách tiếp cận mới. Dùng thí nghiệm tưởng tượng, mô hình cơ chế, đổi biểu diễn, tương tự cấu trúc và giả thuyết cạnh tranh để tạo phương án có dự đoán và cách kiểm chứng. Phù hợp với nghiên cứu, thuật toán, thiết kế hệ thống, học tập và vấn đề thực tế; không cần cho thao tác thường lệ đã có cách làm rõ ràng.
 metadata:
-  version: "0.1.0"
+  version: "0.2.0"
 ---
 
 # Creative Problem Solving (giải quyết vấn đề sáng tạo)
@@ -14,6 +14,7 @@ Giúp người dùng tiến từ “cần một ý tưởng mới” đến mộ
 - Viết bằng văn xuôi tiếng Việt, nối kết các ý. Giữ thuật ngữ tiếng Anh cần độ chính xác và giải nghĩa tiếng Việt ngay bên cạnh trong ngoặc tròn ở lần xuất hiện đầu tiên, ví dụ `thought experiment (thí nghiệm tưởng tượng)`. Không cần lặp phần giải nghĩa trong cùng ngữ cảnh. Giữ nguyên tên riêng, định danh, đường dẫn và câu lệnh; đặt lời giải thích bên ngoài chuỗi cần sao chép. Theo ngôn ngữ khác nếu người dùng yêu cầu.
 - Điều chỉnh độ sâu theo bài toán. Việc nhỏ có thể chỉ cần một hướng thử và cách đánh giá; bài toán khó cần phân biệt giả định, phương án và bằng chứng. Không bắt buộc đủ số bước, số ý tưởng, bảng hay ví dụ cho mọi yêu cầu.
 - Phối hợp với `first-principles` khi cần làm rõ nền tảng và ràng buộc; skill này vẫn dùng được độc lập. Không mặc định tư duy từ nguyên lý gốc chỉ tìm lời giải rẻ nhất hoặc đơn giản nhất.
+- Nếu người dùng mới có một chủ đề hoặc hiện tượng và cần tìm câu hỏi đáng theo đuổi, có thể dùng `inquiry-and-problem-framing` nếu có sẵn. Khi đã có bài toán đủ rõ, tập trung phát triển hướng giải; không bắt buộc đi qua cả hai skill.
 - Giữ mục tiêu, đầu vào được phép dùng, ngân sách và phạm vi hành động của người dùng. Nếu đề xuất thay đổi điều kiện bài toán, ghi rõ phần đã thay đổi và chỉ xem đó là một phương án mở rộng. Thực hiện kiểm tra trong phạm vi đã được cho phép; yêu cầu phân tích không tự cho phép thay đổi hệ thống đang vận hành hoặc thử nghiệm ngoài phạm vi đó.
 
 ## Tổ chức một vòng tìm hướng giải
@@ -25,6 +26,8 @@ Các bước dưới đây hướng dẫn công việc, không phải biểu m�
 Xác định điều cần tạo hoặc cải thiện, dữ liệu được tiếp cận, yêu cầu giữ cố định và tiêu chí thành công. Với các từ như “tốt”, “đúng”, “hiểu”, “nhanh”, chuyển thành điều có thể quan sát, tính toán hoặc đối chiếu với tiêu chí người dùng. Hỏi xem chỉ số có thể tốt lên trong khi mục tiêu vẫn chưa đạt hay không.
 
 Phân biệt dữ kiện có nguồn hoặc quan sát, giả định, điều cố ý bỏ qua và điều chưa biết. Chỉ hỏi thêm khi thông tin thiếu có thể làm đổi hướng giải và không thể suy ra hợp lý; nếu vẫn tiến hành được, nêu giả định tạm thời.
+
+Khi gặp điều bất ngờ hoặc một cách làm quen thuộc chưa giải thích được, ghi điều đã kỳ vọng, quan sát thực có và điều kiện liên quan trước khi chọn giải pháp. Chuyển khoảng chưa hiểu thành câu hỏi có thể tìm hiểu; kiểm tra lại phép đo trước khi xem nó là bất thường có thật. Đọc [Tò mò và đánh giá độc lập](references/curiosity-and-independent-judgment.md) khi cần phát triển câu hỏi hoặc đánh giá một lời khẳng định đang chi phối hướng giải.
 
 ### Chọn thao tác theo chỗ đang mắc
 
@@ -42,6 +45,8 @@ Phân biệt dữ kiện có nguồn hoặc quan sát, giả định, điều c�
 Dựng phiên bản đơn giản vẫn giữ được cơ chế cần nghiên cứu. Ví dụ, phân tích che khuất phải giữ che khuất; đánh giá độ bền trước nhiễu phải đưa nhiễu trở lại sau bước lý tưởng hóa. Ghi rõ các thành phần, quan hệ, quy tắc và điều được giữ cố định; dùng sơ đồ, phương trình, mã giả hoặc mô phỏng nhỏ khi chúng làm dự đoán rõ hơn.
 
 Khi cần nhiều hướng, tạo những phương án khác nhau về cơ chế hoặc biểu diễn, thay vì chỉ đổi tên hay chỉnh vài tham số. Không chặn một ý tưởng chỉ vì chưa quen hoặc chưa đủ chi tiết; phát triển nó đến mức có thể đánh giá. Sau đó sàng lọc bằng ràng buộc thực, cơ sở chuyên môn, đánh đổi và khả năng kiểm chứng. Không mặc định giải pháp mới hơn là tốt hơn giải pháp sẵn có.
+
+Đánh giá độc lập bằng cách dựng lại lý do mạnh nhất ủng hộ một lời khẳng định, rồi kiểm tra bằng chứng và điều kiện áp dụng. Danh tiếng không thay thế bằng chứng, nhưng chuyên môn và kết quả đã được kiểm chứng vẫn có giá trị. Dùng cùng tiêu chuẩn cho ý tưởng phổ biến, ý tưởng trái số đông và ý tưởng của chính mình; nêu bằng chứng nào sẽ khiến mình đổi ý. Bất đồng về ý tưởng cần gắn với lập luận, không suy từ tính cách hoặc động cơ của người đưa ra nó.
 
 ### Biến ý tưởng thành dự đoán
 
