@@ -10,6 +10,14 @@ Nếu đại lượng chưa đo trực tiếp được, chỉ ra đại lượng
 
 **Sản phẩm:** định nghĩa đủ rõ để người khác biết cần quan sát gì, cùng phạm vi mà phép đo hỗ trợ.
 
+## Giữ chức năng cốt lõi, thay cơ chế thực hiện
+
+Nêu tác dụng cần đạt trước khi tối ưu một bộ phận cụ thể. Hỏi bộ phận đó đang làm những việc gì, vì sao nó tồn tại và yêu cầu nào sẽ mất nếu bỏ nó. Tìm cách thực hiện khác khi chức năng vẫn cần; không đồng nhất “bỏ thành phần” với “bỏ chức năng”. Kiểm tra cả chức năng phụ như đồng bộ, xử lý lỗi, độ bền hoặc giao tiếp với phần còn lại nếu chúng liên quan.
+
+Ví dụ giả định, một bước tính toán đắt có thể được cải thiện bằng cách chạy nhanh hơn, chỉ chạy khi đầu vào thay đổi hoặc dùng kết quả đã tính. Hai cách sau chỉ hợp lệ khi nhận biết được điều kiện thay đổi và vẫn đáp ứng yêu cầu về tính đúng, độ mới và nguồn lực. Đừng chọn cơ chế thay thế chỉ vì nó ít thành phần hơn.
+
+**Sản phẩm:** chức năng cần giữ, cơ chế thay thế, điều kiện áp dụng và phép kiểm tra xem yêu cầu có còn được đáp ứng không. Đi vào chi tiết đến mức đủ phân biệt phương án, không đợi một thiết kế hoàn hảo trong đầu.
+
 ## Dựng thế giới nhỏ và thí nghiệm tưởng tượng
 
 Chọn một hiện tượng, liệt kê thành phần và quy tắc tương tác. Bỏ yếu tố gây nhiễu để tách cơ chế, nhưng giữ yếu tố làm hiện tượng có thể xuất hiện. Dự đoán trước khi xem kết quả.
@@ -30,9 +38,11 @@ Thử những câu hỏi phù hợp:
 
 Theo dõi dữ liệu, vật chất, tín hiệu hoặc quyết định qua các thành phần. Với mỗi bước, hỏi đầu vào nào được nhận, phép biến đổi nào xảy ra, thông tin nào mất đi và hệ quả nào chuyển sang bước tiếp.
 
-Dùng giấy, sơ đồ, phương trình hoặc mã giả; không cần có khả năng hình dung sống động. Nếu không biết một bộ phận tuân theo quy tắc nào, học hoặc đo nó thay vì điền một câu chuyện hợp lý vào khoảng trống. Khi có vòng phản hồi hoặc tác vụ đồng thời, giữ chúng trong mô hình nếu chúng quyết định hành vi.
+Với `mental simulation (mô phỏng trong tư duy)`, ghi trạng thái ban đầu, sự kiện làm thay đổi trạng thái và quy tắc chuyển đổi. Chọn những tình huống liên quan: khởi động, hoạt động ổn định, đổi đầu vào, dừng, khôi phục hoặc lỗi. Hỏi trạng thái nào còn được giữ, thay đổi nào lan sang bộ phận khác và thuộc tính nào phải tiếp tục đúng. Không biến mọi bài toán nhỏ thành một cuộc đánh giá toàn bộ hệ thống.
 
-**Sản phẩm:** mô hình đủ rõ để dự đoán tác động của một thay đổi và chỉ ra điều có thể làm dự đoán sai.
+Dùng giấy, sơ đồ, phương trình hoặc mã giả; không cần có khả năng hình dung sống động. Nếu không biết một bộ phận tuân theo quy tắc nào, học, tính hoặc đo nó thay vì điền một câu chuyện hợp lý vào khoảng trống. Khi có vòng phản hồi hoặc tác vụ đồng thời, giữ chúng trong mô hình nếu chúng quyết định hành vi. Một mẫu thử nhỏ có thể giúp xây dựng hiểu biết, không chỉ dùng để xác nhận thiết kế đã hoàn tất.
+
+**Sản phẩm:** mô hình đủ rõ để dự đoán tác động của một thay đổi và chỉ ra điều có thể làm dự đoán sai. Ghi nhận cảm giác “đã thấy lời giải” như ý tưởng cần diễn đạt và kiểm tra; độ sống động hoặc sự chắc chắn chủ quan không thay thế bằng chứng.
 
 ## Đổi biểu diễn
 
@@ -59,6 +69,20 @@ Nếu chưa có bài toán tham khảo hữu ích, phân rã chức năng cần 
 Ví dụ, chọn câu hỏi để phân biệt đáp án và chọn góc camera để phân biệt hình dạng có cấu trúc chung. Nhưng di chuyển camera có chi phí, giới hạn vị trí và nhiễu quan sát; các yếu tố này phải tham gia lựa chọn.
 
 **Sản phẩm:** cơ chế mới trong bài toán hiện tại, ánh xạ hỗ trợ nó và điều kiện cần kiểm tra. Chưa đủ căn cứ để tuyên bố đó là thuật toán mới của lĩnh vực.
+
+## Quay lại bài toán sau khi mắc kẹt
+
+Dùng khi đã có chuẩn bị và đang lặp lại cùng một hướng mà chưa tiến thêm. Ghi ngắn mục tiêu, điểm mắc, các cách đã thử và câu hỏi còn mở để có thể quay lại. Trước hết xem phần thiếu là kiến thức, dữ liệu hay một cách biểu diễn khác; không dùng tạm nghỉ thay cho việc tìm thông tin cần thiết.
+
+Với người dùng, `incubation (tạm rời bài toán rồi quay lại)` có thể là một lựa chọn: đổi sang hoạt động nhẹ hoặc đi bộ nếu phù hợp, rồi quay lại với một câu hỏi hay góc nhìn cụ thể. Không ấn định thời lượng như công thức chung, không yêu cầu chờ ý tưởng tự xuất hiện. Tập trung một mình có thể là lựa chọn ở một giai đoạn; vẫn cần đối chiếu nguồn và phản biện khi có ích.
+
+Với AI agent, đổi biểu diễn, dựng phản ví dụ, đọc một nguồn liên quan hoặc thử cơ chế khác trong phạm vi được phép. Không ngủ chờ, giả nhận có tiềm thức hoặc ngừng việc đã được giao để mô phỏng trải nghiệm của con người. Khi không còn bước hữu ích khả thi, báo rõ điều thiếu và bước tiếp theo cần thiết.
+
+Sau khi quay lại, viết phần ý tưởng mới, cơ chế và dự đoán trước khi thử. Nếu không có thay đổi, chọn một bước thu thập thông tin hoặc thu hẹp bài toán; không kéo dài việc nghỉ và đặt câu hỏi như một nghi thức.
+
+**Căn cứ và giới hạn:** [Oppezzo và Schwartz (2014)](https://www.apa.org/pubs/journals/releases/xlm-a0036577.pdf) nghiên cứu đi bộ trong các nhiệm vụ tạo ý tưởng, phép tương tự và tìm đáp án. Kết quả không hỗ trợ việc suy rộng lợi ích sang mọi loại suy luận hoặc bảo đảm giải bài toán khó. [Baird và cộng sự (2012)](https://journals.sagepub.com/doi/10.1177/0956797612446024) báo cáo lợi ích của một nhiệm vụ ít đòi hỏi chú ý trong khoảng tạm ngưng đối với bài tạo công dụng khác thường đã được tiếp cận trước đó; không chứng minh đơn thuần chờ đợi sẽ tạo lời giải hay xác nhận toàn bộ quy trình này.
+
+**Sản phẩm:** một hướng biểu diễn, giả thuyết hoặc bước kiểm tra tiếp theo, cùng ghi nhận điều đã thay đổi trong cách hiểu. Những lời kể về Tesla là nguồn gợi ý thao tác, không phải bảo đảm mô phỏng trong đầu tương đương thiết bị thật.
 
 ## Tạo giả thuyết cạnh tranh và phép thử phân biệt
 

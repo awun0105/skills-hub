@@ -32,6 +32,18 @@ Chọn hai bài toán khác bề ngoài. Ánh xạ đối tượng, quan hệ, r
 
 **Tiêu chí:** sản phẩm là hướng giải có điều kiện và giới hạn, không chỉ là một phép ví von.
 
+## Theo dõi một vòng hoạt động
+
+Chọn một hệ thống nhỏ, ghi trạng thái ban đầu và lần theo một chuỗi sự kiện liên quan đến mục tiêu. Dự đoán thay đổi ở từng bộ phận; thử thêm tình huống đổi đầu vào, dừng hoặc lỗi khi chúng có ý nghĩa. Có thể dùng sơ đồ, phép tính, mã giả hoặc mẫu thử để đối chiếu.
+
+**Tiêu chí:** nêu được quy tắc hỗ trợ dự đoán, phần mô hình còn thiếu và kết quả nào sẽ khiến mình sửa nó. Không đánh giá bằng mức độ hình dung sống động; một lần chạy khớp chưa chứng minh mọi hành vi đều đúng.
+
+## Thay cơ chế, giữ chức năng
+
+Chọn một bộ phận đang gây chi phí hoặc hạn chế. Liệt kê chức năng chính và chức năng phụ liên quan; đề xuất một cách khác thực hiện chúng. Theo dõi tác động sang các phần còn lại và chọn phép kiểm tra yêu cầu cần giữ.
+
+**Tiêu chí:** chỉ ra chức năng được bảo toàn, điều kiện để cách thay thế hợp lệ và đánh đổi mới phát sinh. Nếu phải bỏ một yêu cầu để phương án hoạt động, ghi rõ đó là thay đổi bài toán.
+
 ## Tạo phương án từ các chức năng
 
 Chọn một việc cần thực hiện và tách thành các chức năng. Với những chức năng có thể thay đổi, tìm các cách thực hiện khác nhau rồi ghép những cách tương thích. Chọn tổ hợp có lý do gắn với mục tiêu, mô tả tương tác và một phép kiểm tra.

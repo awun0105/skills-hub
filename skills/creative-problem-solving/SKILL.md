@@ -2,7 +2,7 @@
 name: creative-problem-solving
 description: Tạo và phát triển hướng giải khi bài toán bế tắc, cách hiện tại chưa đáp ứng mục tiêu hoặc người dùng muốn một cách tiếp cận mới. Dùng thí nghiệm tưởng tượng, mô hình cơ chế, đổi biểu diễn, tương tự cấu trúc và giả thuyết cạnh tranh để tạo phương án có dự đoán và cách kiểm chứng. Phù hợp với nghiên cứu, thuật toán, thiết kế hệ thống, học tập và vấn đề thực tế; không cần cho thao tác thường lệ đã có cách làm rõ ràng.
 metadata:
-  version: "0.2.0"
+  version: "0.3.0"
 ---
 
 # Creative Problem Solving (giải quyết vấn đề sáng tạo)
@@ -44,6 +44,8 @@ Khi gặp điều bất ngờ hoặc một cách làm quen thuộc chưa giải 
 
 Dựng phiên bản đơn giản vẫn giữ được cơ chế cần nghiên cứu. Ví dụ, phân tích che khuất phải giữ che khuất; đánh giá độ bền trước nhiễu phải đưa nhiễu trở lại sau bước lý tưởng hóa. Ghi rõ các thành phần, quan hệ, quy tắc và điều được giữ cố định; dùng sơ đồ, phương trình, mã giả hoặc mô phỏng nhỏ khi chúng làm dự đoán rõ hơn.
 
+Giữ rõ chức năng cốt lõi trước khi sa vào chi tiết: thành phần đang thực hiện việc gì, có thể thay cơ chế mà vẫn giữ yêu cầu nào? Khi cần hiểu hành vi hệ thống, lần theo các trạng thái và chuyển đổi liên quan, gồm khởi động, vận hành, thay đổi đầu vào, dừng hoặc lỗi nếu chúng ảnh hưởng bài toán. Không cần hình dung sống động hay hiểu hoàn toàn trước khi tính; một phép tính hoặc `prototype (mẫu thử)` nhỏ có thể giúp làm rõ cơ chế còn thiếu.
+
 Khi cần nhiều hướng, tạo những phương án khác nhau về cơ chế hoặc biểu diễn, thay vì chỉ đổi tên hay chỉnh vài tham số. Không chặn một ý tưởng chỉ vì chưa quen hoặc chưa đủ chi tiết; phát triển nó đến mức có thể đánh giá. Sau đó sàng lọc bằng ràng buộc thực, cơ sở chuyên môn, đánh đổi và khả năng kiểm chứng. Không mặc định giải pháp mới hơn là tốt hơn giải pháp sẵn có.
 
 Đánh giá độc lập bằng cách dựng lại lý do mạnh nhất ủng hộ một lời khẳng định, rồi kiểm tra bằng chứng và điều kiện áp dụng. Danh tiếng không thay thế bằng chứng, nhưng chuyên môn và kết quả đã được kiểm chứng vẫn có giá trị. Dùng cùng tiêu chuẩn cho ý tưởng phổ biến, ý tưởng trái số đông và ý tưởng của chính mình; nêu bằng chứng nào sẽ khiến mình đổi ý. Bất đồng về ý tưởng cần gắn với lập luận, không suy từ tính cách hoặc động cơ của người đưa ra nó.
@@ -67,6 +69,8 @@ Phân biệt **kết luận có suy ra từ giả định không** với **giả
 Nêu rõ điều đã kiểm chứng, điều mới suy luận và phép thử còn đề xuất. Không bịa dữ liệu, kết quả, nguồn hoặc độ chắc chắn. Khi chưa thể kiểm tra, đưa kết luận có điều kiện và bước tiếp theo khả thi.
 
 Một vòng hữu ích kết thúc bằng hướng giải có thể kiểm tra, một giới hạn, phản ví dụ, phép đo hoặc nhu cầu kiến thức cụ thể. Nếu chỉ diễn đạt lại cùng câu hỏi, chuyển sang thu thập thông tin hoặc học phần còn thiếu trong phạm vi được phép. Dừng hoặc xem xét lại khi hướng bị bác bỏ, không đáp ứng ràng buộc, hay chi phí theo đuổi vượt giá trị mong đợi; không kéo dài việc đặt câu hỏi vô hạn.
+
+Khi đã chuẩn bị bài toán nhưng mắc kẹt trong một cách nhìn, ghi lại điểm mắc và thử đổi biểu diễn, hoạt động hoặc nguồn thông tin trước khi quay lại. Tạm nghỉ hay đi bộ là lựa chọn dành cho người dùng khi phù hợp, không phải bước bắt buộc hoặc bảo đảm có lời giải. AI agent tiếp tục bằng một hướng kiểm tra khác khả thi; không chờ để giả lập việc ủ ý tưởng. Xem phần quay lại bài toán trong [Các thao tác tạo ý tưởng](references/techniques.md) khi cần hướng dẫn cụ thể.
 
 ## Mang theo giới hạn của kết luận
 
