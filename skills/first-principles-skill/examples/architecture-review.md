@@ -1,133 +1,41 @@
-# Example: Microservices Architecture Review
+# Ví dụ: có nên chia ứng dụng thành nhiều dịch vụ?
 
-A first principles analysis of whether to adopt microservices for a SaaS application.
+Đây là tình huống giả định. Các thông tin bên dưới được đặt ra để minh họa, không phải dữ kiện đã thu thập từ một doanh nghiệp thực. Mẫu này dành cho quyết định phức tạp; câu hỏi nhỏ không cần trình bày dài như vậy.
 
----
+## Mục tiêu
 
-## Context
+Giả sử một nhóm muốn rút ngắn thời gian đưa thay đổi đến người dùng mà vẫn giữ độ tin cậy và chi phí vận hành trong giới hạn đã thống nhất. Nhóm đang cân nhắc microservices (kiến trúc gồm các dịch vụ có thể triển khai độc lập), sau khi thấy công ty khác áp dụng thành công.
 
-A B2B SaaS company wants to modernize their monolithic application. The CTO proposes microservices because "that's what Netflix and Amazon do."
+Trước khi đánh giá giải pháp, cần xác định thời gian phát hành mong muốn, cách đo độ tin cậy và ngân sách vận hành. “Phải chia dịch vụ” là đề xuất, chưa phải yêu cầu bắt buộc.
 
----
+## Căn cứ và khoảng trống
 
-## First Principles Analysis: Should We Adopt Microservices?
+| Thông tin trong tình huống giả định | Vai trò và giới hạn |
+|---|---|
+| Nhóm có 12 kỹ sư, thuộc hai đội | Điều kiện tổ chức; không đủ để kết luận một kiến trúc là tối ưu. |
+| Nhóm báo cáo rằng chờ kiểm tra trước phát hành đang gây chậm | Quan sát được cung cấp trong tình huống; cần nhật ký và số đo để xác định khâu chờ thực sự. |
+| Độ tin cậy hiện có phải được duy trì | Yêu cầu; cần chuyển thành tiêu chí đánh giá cụ thể với người chịu trách nhiệm. |
+| Chia dịch vụ sẽ làm phát hành nhanh hơn | Giả thuyết; phụ thuộc mức tách biệt, dữ liệu dùng chung và quy trình triển khai. |
+| Các thành phần có cần tăng tài nguyên độc lập không? | Điều chưa biết; cần dữ liệu tải nếu yếu tố này được dùng để biện minh cho việc tách. |
 
-### 1. Problem Essence
+Việc công ty khác thành công cho biết có một cách làm đáng tham khảo. Cần kiểm tra mục tiêu, nguồn lực và các ràng buộc của họ trước khi áp dụng kinh nghiệm đó.
 
-**Core problem:** Enable faster development velocity and independent scaling
+## Phương án và suy luận
 
-**Success criteria:**
-- Deploy features without full system regression testing
-- Scale high-traffic components independently
-- Enable parallel development across teams
+Nếu thời gian chờ chủ yếu nằm ở một bộ kiểm tra chậm, tối ưu cách chọn và chạy kiểm tra là phương án trực tiếp cần đánh giá. Tách dịch vụ chưa chắc xử lý được nguyên nhân đó.
 
-### 2. Assumptions Challenged
+Nếu nhiều thay đổi liên tục ảnh hưởng chéo giữa các phần của ứng dụng, modular monolith (ứng dụng triển khai chung nhưng chia mô-đun với ranh giới rõ ràng) có thể giúp quản lý phụ thuộc. Cần kiểm tra xem ranh giới đề xuất có phản ánh dữ liệu và trách nhiệm thực tế không.
 
-| Assumption | Challenge | Verdict |
-|------------|-----------|---------|
-| Netflix uses microservices, so should we | Netflix has 2000+ engineers. We have 12. | **Discard** - Different scale |
-| Need independent deployability | How often do deploy conflicts occur? | **Investigate** - Check deploy logs |
-| Services need independent scaling | Which components have different load? | **Investigate** - Check metrics |
-| Team autonomy requires service boundaries | How many teams? How do they coordinate? | **Investigate** - Check org structure |
-| Network latency is acceptable | What's current response time budget? | **Keep** - Already using external APIs |
+Nếu có một phần ít phụ thuộc, cần phát hành hoặc tăng tài nguyên theo nhu cầu riêng, tách phần đó thành dịch vụ có thể đáng thử. Đánh đổi gồm giao tiếp qua mạng, đồng bộ dữ liệu, theo dõi lỗi và công sức vận hành. Không suy ra lợi ích hoặc chi phí bằng một tỷ lệ cố định chỉ từ số kỹ sư.
 
-**Investigation Results:**
-- Deploy conflicts: 2 per month (not a major pain point)
-- Scaling: All components scale together, no hot spots
-- Teams: 2 teams, 6 engineers each, high collaboration
-- Latency: 200ms budget, currently at 80ms
+## Cách kiểm chứng đề xuất
 
-### 3. Ground Truths
+Đầu tiên, đo thời gian từ lúc một thay đổi sẵn sàng đến khi người dùng nhận được, tách các khoảng chờ để xác định khâu gây chậm. So sánh trên các thay đổi đại diện, tránh quy toàn bộ biến động cho kiến trúc.
 
-1. **Team size is 12 engineers across 2 teams** - Both teams touch most features
-2. **Traffic is uniform** - No component needs independent scaling
-3. **Deployment frequency is 10x/week** - Currently works fine with monolith
-4. **Core complexity is in domain logic** - Not in infrastructure
-5. **Engineers spend 70% time on features, 30% on infrastructure** - Already high infra burden
-6. **Company is growing 50%/year** - Will have ~18 engineers in a year
+Tiếp theo, chọn một cải tiến có phạm vi nhỏ dựa trên nguyên nhân quan sát được. Nếu thử tách dịch vụ, chọn phần có ranh giới phù hợp và so sánh thời gian phát hành, lỗi phát sinh, độ trễ và công sức vận hành với cách hiện tại. Định nghĩa tiêu chí chấp nhận theo mục tiêu của nhóm trước khi thử. Việc triển khai thử phụ thuộc phạm vi được người dùng cho phép; ví dụ này chỉ đề xuất cách đánh giá.
 
-### 4. Reasoning Chain
+## Kết luận có điều kiện
 
-```
-Ground Truth: Team size is 12
-    ↓
-Inference: Microservices coordination overhead > benefit at this scale
-    ↓
-Ground Truth: Traffic is uniform
-    ↓
-Inference: Independent scaling benefit is zero
-    ↓
-Ground Truth: 30% time already on infrastructure
-    ↓
-Inference: Microservices would increase this to 50%+
-    ↓
-Ground Truth: Growing 50%/year
-    ↓
-Inference: Revisit in 2 years when team is 25+
-    ↓
-Conclusion: Modular monolith now, extract services later if needed
-```
+Với thông tin giả định hiện có, bước được hỗ trợ tốt nhất là đo khâu gây chậm phát hành. Chưa đủ căn cứ để kết luận nên tách toàn bộ hệ thống hoặc giữ nguyên kiến trúc lâu dài.
 
-### 5. Conclusion
-
-**Recommended approach:** Modular monolith with clear internal boundaries
-
-**Structure:**
-```
-/app
-  /modules
-    /billing      # Clear interface, could become service
-    /auth         # Clear interface, could become service
-    /core         # Shared domain logic
-    /api          # HTTP handlers
-  /shared
-    /database     # Shared DB access
-    /events       # Internal event bus
-```
-
-**Key insight:** The first principles analysis revealed that the desire for microservices was based on analogy (Netflix does it) rather than actual pain points. The team's real problems (deploy conflicts, scaling) don't exist yet.
-
-**Trade-offs acknowledged:**
-- Less "modern" architecture may affect recruiting perception
-- Will need to refactor later if scaling patterns change
-- Internal discipline required to maintain module boundaries
-
-**Revisit trigger:** When any of these change:
-- Team size exceeds 25 engineers
-- Component traffic patterns diverge significantly
-- Deploy conflicts exceed 10/month
-- Different components need different tech stacks
-
----
-
-## What Microservices Would Have Cost
-
-If we had proceeded with microservices without this analysis:
-
-| Investment | Estimate |
-|------------|----------|
-| Service mesh setup | 2 engineer-months |
-| Distributed tracing | 1 engineer-month |
-| Service discovery | 0.5 engineer-months |
-| API gateway | 1 engineer-month |
-| Per-service CI/CD | 2 engineer-months |
-| Ongoing maintenance | +20% engineering time |
-
-**Total upfront:** 6.5 engineer-months
-**Ongoing:** 20% tax on all engineering work
-
-**Benefit realized:** Near zero (problems don't exist yet)
-
----
-
-## Template Applied
-
-This example followed the standard first principles template:
-
-1. ✅ Problem stated in outcomes, not solutions
-2. ✅ All assumptions explicitly listed and challenged
-3. ✅ Each assumption investigated with data
-4. ✅ Ground truths established from investigation
-5. ✅ Solution built from reasoning chain
-6. ✅ Trade-offs acknowledged
-7. ✅ Revisit triggers defined
+Xem xét lại lựa chọn khi có bằng chứng về nhu cầu triển khai độc lập, khác biệt tải hoặc chi phí phụ thuộc giữa các đội. Không dùng một ngưỡng số kỹ sư hay một số lần xung đột tự đặt làm quy luật chung.

@@ -1,226 +1,23 @@
-# First Principles in Software Engineering
+# Ví dụ kỹ thuật phần mềm
 
-Real-world examples of applying first principles thinking to common software decisions.
+Đây là các tình huống giả định để minh họa cách suy luận, không phải kết quả đo hay khuyến nghị công nghệ cho một hệ thống đã kiểm tra.
 
-## Example 1: Database Selection
+## Ứng dụng xử lý video chậm
 
-### Conventional Thinking
-"We need a database. PostgreSQL is popular and reliable. Let's use PostgreSQL."
+Người dùng đề xuất mua GPU (bộ xử lý đồ họa) mới vì ứng dụng chậm. Trước hết cần làm rõ tốc độ yêu cầu, độ chính xác cần giữ và giới hạn chi phí. “GPU hiện tại yếu” là giả thuyết; cần đo thời gian đọc dữ liệu, tiền xử lý, chạy mô hình và xuất kết quả để phân biệt nguyên nhân.
 
-### First Principles Analysis
+Giả sử một phép đo trong tình huống minh họa cho thấy đọc và giải mã video chiếm phần lớn thời gian. Điều này làm cho việc kiểm tra khâu đọc dữ liệu trở nên đáng ưu tiên; nó chưa chứng minh GPU mới không mang lại lợi ích. Cũng cần xem phép đo có tính đến các tác vụ chạy chồng nhau và thời gian chờ thiết bị hay không.
 
-**Problem Essence:**
-- Store and retrieve data reliably
-- Support the access patterns our application needs
+Một bước thử hợp lý là so sánh cách đọc hiện tại với một cách cải thiện việc đọc trên cùng video và cùng mô hình. Đo thời gian xử lý toàn bộ, kiểm tra kết quả đầu ra, lặp lại đủ để nhận ra biến động. Chấp nhận thay đổi khi đạt tiêu chí tốc độ đã thống nhất mà vẫn giữ chất lượng trong giới hạn cho phép.
 
-**Assumptions Challenged:**
+Nếu chưa có phép đo thực, kết luận phù hợp là “đo từng khâu trước khi quyết định đầu tư”, kèm cách đo. Không viết “đã xác định lỗi nằm ở khâu dữ liệu”.
 
-| Assumption | Challenge | Verdict |
-|------------|-----------|---------|
-| Need a traditional RDBMS | What are our actual access patterns? | Depends on data model |
-| Need ACID transactions | Which operations truly need atomicity? | Maybe only subset |
-| Need SQL | Do we query relationally? | Check actual queries |
+## Có cần thêm bộ nhớ đệm dùng chung?
 
-**Ground Truths:**
-1. Data must persist across restarts
-2. Read latency must be < 50ms for 99th percentile
-3. Write volume is ~100 writes/second
-4. Data is mostly read, rarely updated
-5. Access pattern is key-value lookup 90% of the time
+Mục tiêu là giảm thời gian phản hồi mà vẫn đáp ứng yêu cầu về độ mới của dữ liệu. “Cần Redis”, “chỉ có một máy nên dùng bộ nhớ cục bộ là đủ” và “dữ liệu ít thay đổi nên có thể lưu một giờ” đều cần kiểm tra.
 
-**Reasoning Chain:**
-- Ground truth #5 suggests relational model may be overkill
-- Ground truths #2 and #4 favor read-optimized storage
-- Ground truth #3 shows write volume is modest
+Những thông tin có thể làm đổi quyết định gồm truy vấn nào chậm và xuất hiện thường xuyên, số tiến trình phục vụ, yêu cầu đồng bộ giữa các tiến trình, quy tắc cập nhật dữ liệu và giới hạn bộ nhớ. Một máy có thể chạy nhiều tiến trình; mức độ thay đổi thường thấy của dữ liệu không tự xác định được mức dữ liệu cũ mà người dùng chấp nhận.
 
-**Conclusion:** A key-value store (Redis with persistence, or DynamoDB) might be simpler and more performant than PostgreSQL for this specific use case.
+Tùy căn cứ thu được, có thể so sánh tối ưu truy vấn, lưu tạm trong từng tiến trình hoặc dùng bộ nhớ đệm chung. Mỗi cách cần được đánh giá về tốc độ, tính đúng của dữ liệu, chi phí vận hành và hành vi khi thành phần lưu tạm bị lỗi. Giải pháp sẵn có và cách hiện tại đều có thể là phương án phù hợp.
 
----
-
-## Example 2: Microservices vs Monolith
-
-### Conventional Thinking
-"Microservices are the modern best practice. We should split our monolith."
-
-### First Principles Analysis
-
-**Problem Essence:**
-- Deploy and scale application components independently
-- Enable team autonomy and parallel development
-
-**Assumptions Challenged:**
-
-| Assumption | Challenge | Verdict |
-|------------|-----------|---------|
-| Microservices = faster development | Do we have multiple teams? | 2 developers - Keep |
-| Need independent scaling | Do components have different load? | Uniform load - Discard |
-| Network calls are acceptable | What's our latency budget? | 10ms budget - Concern |
-
-**Ground Truths:**
-1. Team size is 2 developers
-2. All components scale together
-3. Strong consistency needed between components
-4. Deployment frequency is weekly
-
-**Reasoning Chain:**
-- Ground truth #1 means coordination overhead > team autonomy benefit
-- Ground truth #2 eliminates scaling benefit
-- Ground truth #3 makes distributed transactions complex
-- Ground truth #4 means deployment isn't a bottleneck
-
-**Conclusion:** Monolith with modular architecture provides all benefits without distributed system complexity. Revisit when team grows to 8+ or components need independent scaling.
-
----
-
-## Example 3: Authentication System
-
-### Conventional Thinking
-"We need auth. Let's implement OAuth2 with JWT tokens like everyone else."
-
-### First Principles Analysis
-
-**Problem Essence:**
-- Verify user identity
-- Control access to resources
-
-**Assumptions Challenged:**
-
-| Assumption | Challenge | Verdict |
-|------------|-----------|---------|
-| Need OAuth2 | Are we federating identity? | No federation - Overkill |
-| JWT is necessary | Do we need stateless auth? | Single server - Not needed |
-| Need refresh tokens | What's our session duration? | 8-hour workday - Simple session |
-
-**Ground Truths:**
-1. Single application, no third-party auth
-2. Users are employees (known set)
-3. Single deployment (not distributed)
-4. Session duration matches workday
-
-**Reasoning Chain:**
-- Ground truth #1 eliminates OAuth2 complexity
-- Ground truth #3 means server-side sessions are viable
-- Ground truth #4 means simple session timeout works
-
-**Conclusion:** Server-side sessions with secure cookies. 100 lines of code vs 1000+ for full OAuth2/JWT implementation.
-
----
-
-## Example 4: Caching Strategy
-
-### Conventional Thinking
-"Add Redis for caching. Cache everything with 5-minute TTL."
-
-### First Principles Analysis
-
-**Problem Essence:**
-- Reduce latency for frequent operations
-- Reduce load on primary data store
-
-**Assumptions Challenged:**
-
-| Assumption | Challenge | Verdict |
-|------------|-----------|---------|
-| Need distributed cache | Single server? | Yes - Local cache viable |
-| Cache all queries | Which queries are slow/frequent? | Only 3 queries matter |
-| 5-minute TTL | What's data freshness requirement? | Varies by data type |
-
-**Ground Truths:**
-1. 95% of latency from 3 specific queries
-2. Single application server
-3. User profile data changes rarely (daily)
-4. Inventory data changes frequently (per minute)
-5. Available memory: 2GB
-
-**Reasoning Chain:**
-- Ground truth #2 means in-process cache sufficient
-- Ground truth #1 means cache only those 3 queries
-- Ground truths #3 and #4 mean different TTLs needed
-
-**Conclusion:**
-- In-memory cache (no Redis needed)
-- Cache user profiles for 1 hour
-- Cache inventory for 30 seconds
-- Cache only the 3 hot queries
-
----
-
-## Example 5: API Design
-
-### Conventional Thinking
-"REST is the standard. Everything should be a resource with CRUD operations."
-
-### First Principles Analysis
-
-**Problem Essence:**
-- Enable clients to perform operations
-- Communicate data between systems
-
-**Assumptions Challenged:**
-
-| Assumption | Challenge | Verdict |
-|------------|-----------|---------|
-| Must be RESTful | Are operations truly CRUD? | Some are workflows |
-| Need JSON | Who are the consumers? | Internal Go services |
-| HTTP is required | Any browser clients? | No - Server to server |
-
-**Ground Truths:**
-1. All clients are internal Go services
-2. Strong typing prevents bugs
-3. Operations include workflows (not just CRUD)
-4. Latency budget is 5ms
-
-**Reasoning Chain:**
-- Ground truth #1 and #2 favor gRPC with protobuf
-- Ground truth #3 means RPC fits better than REST
-- Ground truth #4 favors binary protocol (gRPC)
-
-**Conclusion:** gRPC with protobuf. Strong typing, efficient serialization, natural RPC semantics for workflows.
-
----
-
-## Anti-Pattern: Over-Engineering from First Principles
-
-First principles thinking can also lead to over-engineering if misapplied:
-
-### The Trap
-"From first principles, we could build a more efficient database/framework/language..."
-
-### The Check
-**Additional Ground Truth:** Development time is finite and expensive.
-
-**Questions:**
-- Does building custom save more time than using existing?
-- Is the performance gain worth the maintenance burden?
-- Will the team be able to maintain custom solutions?
-
-**Rule of Thumb:** If existing solution is within 2x of optimal and team knows it, use it. First principles reveals when existing solutions are 10x wrong.
-
----
-
-## Template for Your Analysis
-
-```markdown
-## First Principles: [Decision]
-
-### Conventional Wisdom
-[What everyone assumes]
-
-### Problem Essence
-[Core need in one sentence]
-
-### Assumptions Table
-| Assumption | Challenge | Verdict |
-|------------|-----------|---------|
-
-### Ground Truths
-1. [Fact 1]
-2. [Fact 2]
-3. [Fact 3]
-
-### Reasoning Chain
-[Truth] → [Inference] → [Conclusion]
-
-### Decision
-[What to do and why]
-```
+Phép thử đề xuất là chạy tải đại diện, đo thời gian phản hồi, đồng thời kiểm tra cập nhật dữ liệu có được phản ánh trong khoảng cho phép hay không. Khi chưa có kết quả, chỉ nêu lựa chọn có điều kiện và thông tin cần bổ sung, không ấn định công nghệ hoặc thời hạn lưu từ thói quen.

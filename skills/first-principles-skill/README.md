@@ -1,114 +1,31 @@
-# First Principles Thinking Skill
+# First Principles Thinking
 
-A Claude Code skill that provides systematic first principles thinking methodology for evaluating designs, challenging assumptions, and building solutions from fundamental truths.
+Skill dùng chung để làm rõ mục tiêu, kiểm tra giả định và xây dựng cách giải từ dữ kiện, yêu cầu cùng ràng buộc thực tế. Áp dụng cho học tập, công việc, đời sống và kỹ thuật.
 
-## What is This?
+## Sử dụng
 
-This is a **skill** for [Claude Code](https://claude.ai/code) that enhances Claude's ability to analyze problems from first principles rather than relying on analogies or conventions.
+Yêu cầu “phân tích từ nguyên lý gốc”, “kiểm tra các giả định của phương án này” hoặc gọi skill `first-principles`. Hướng dẫn chính nằm trong [SKILL.md](SKILL.md).
 
-## Installation
+Skill viết bằng văn xuôi tiếng Việt, giữ thuật ngữ tiếng Anh cần độ chính xác và giải nghĩa tiếng Việt trong ngoặc tròn ngay bên cạnh. Độ sâu tùy bài toán: câu hỏi đơn giản trả lời gọn; quyết định phức tạp trình bày căn cứ, phương án, đánh đổi và cách kiểm chứng. Không bắt buộc một biểu mẫu dài cho mọi lần sử dụng.
 
-### Option 1: Copy to your skills directory
+## Cách suy luận
 
-```bash
-# Clone the repo
-git clone https://github.com/tt-a1i/first-principles-skill.git
+Làm rõ kết quả cần đạt; phân biệt dữ kiện có bằng chứng, yêu cầu và ràng buộc, giả định và điều chưa biết. Kiểm tra những giả định có thể làm đổi quyết định, xây dựng các lựa chọn khả thi rồi tìm cách kiểm chứng tương xứng với bài toán. Nêu rõ kết quả đã kiểm chứng, suy luận và kế hoạch thử còn chưa thực hiện.
 
-# Copy to Claude Code skills directory
-cp -r first-principles-skill ~/.claude/plugins/superclaude/skills/first-principles
-```
+Kinh nghiệm và giải pháp có sẵn vẫn là nguồn tham khảo hữu ích khi điều kiện áp dụng phù hợp. Phân tích từ nguyên lý gốc không đồng nghĩa tự xây lại mọi thứ hoặc coi mọi cơ sở suy luận là chân lý tuyệt đối.
 
-### Option 2: Symlink
+## Ví dụ bổ trợ
 
-```bash
-git clone https://github.com/tt-a1i/first-principles-skill.git ~/skills/first-principles-skill
-ln -s ~/skills/first-principles-skill ~/.claude/plugins/superclaude/skills/first-principles
-```
+- [Kỹ thuật phần mềm](references/software-examples.md): hiệu năng và bộ nhớ đệm.
+- [Đánh giá kiến trúc](examples/architecture-review.md): lựa chọn giữa các cách tổ chức và triển khai ứng dụng.
+- [Phân rã chi phí](references/elon-musk-examples.md): giới hạn của giá nguyên liệu và giai thoại nổi tiếng.
 
-## Usage
+Các tình huống và số liệu minh họa được ghi rõ là giả định, không phải bằng chứng về một hệ thống hoặc doanh nghiệp đã được kiểm tra.
 
-The skill triggers automatically when you use phrases like:
+## Vị trí trong hub
 
-| Language | Trigger Phrases |
-|----------|-----------------|
-| Vietnamese | "nguyên lý gốc", "suy luận từ gốc", "bản chất vấn đề", "giải thích từ nguyên lý gốc" |
-| English | "analyze from first principles", "think from scratch", "question this design", "is this the right approach", "challenge assumptions" |
-| Chinese | "第一性原理", "从根本分析", "从零开始思考", "这个设计合理吗", "为什么要这样做", "有没有更好的方案" |
-
-### Example
-
-```
-User: 用第一性原理分析一下我们是否应该采用微服务架构
-
-Claude: [Applies first principles thinking methodology]
-
-## First Principles Analysis: Microservices Architecture
-
-### 1. Problem Essence
-**Core problem:** Enable faster development and independent scaling
-**Success criteria:** Deploy without full regression, scale components independently
-
-### 2. Assumptions Challenged
-| Assumption | Challenge | Verdict |
-|------------|-----------|---------|
-| Need microservices for modern apps | Do we have the team size? | Investigate |
-...
-```
-
-## Structure
-
-```
-first-principles-skill/
-├── SKILL.md                    # Main skill definition
-├── README.md                   # This file
-├── LICENSE                     # MIT License
-├── references/
-│   ├── software-examples.md    # Software engineering case studies
-│   └── elon-musk-examples.md   # SpaceX/Tesla examples
-└── examples/
-    └── architecture-review.md  # Complete microservices analysis example
-```
-
-## Core Methodology
-
-The skill follows a 5-phase process:
-
-1. **Identify Problem Essence** - Strip away details to find the core problem
-2. **Challenge Assumptions** - Question every assumption systematically
-3. **Establish Ground Truths** - Identify irreducible facts
-4. **Reason Upward** - Build solutions from fundamentals
-5. **Validate Reasoning** - Ensure every decision traces to ground truths
-
-## Output Format
-
-The skill produces structured analysis:
-
-```markdown
-## First Principles Analysis: [Topic]
-
-### 1. Problem Essence
-### 2. Assumptions Challenged (table)
-### 3. Ground Truths
-### 4. Reasoning Chain
-### 5. Conclusion
-```
-
-## Complementary Skills
-
-This skill works well with:
-
-- **5-Whys** - Dig deeper when assumptions surface
-- **Trade-off Analysis** - Evaluate options against fundamentals
-- **Pre-mortem** - Stress-test reasoning before implementation
-
-## Contributing
-
-Contributions welcome! Please feel free to submit issues or pull requests.
+Bản dùng chung nằm tại `~/.agents/skills/first-principles-skill/`; `~/.agents/skills/first-principles` là liên kết đến thư mục này. Các liên kết hiện có cho Claude Code và Codex dùng cùng bản trong hub.
 
 ## License
 
-MIT License - see [LICENSE](LICENSE) file.
-
-## Author
-
-Created for use with Claude Code's skill system.
+MIT — xem [LICENSE](LICENSE). Bản trong hub được điều chỉnh từ skill gốc; thông tin nguồn được giữ trong `.skillfish.json`.
