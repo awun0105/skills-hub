@@ -90,7 +90,7 @@ Quy tắc chung:
 - Không dùng khẩu ngữ: "xịn", "ngon", "phê", "cực kỳ luôn", "nha", "nhé", "á", "đó".
 - Không dùng lối hành chính nặng nề: "căn cứ vào", "nhằm mục đích", "trên cơ sở", "kính đề nghị".
 - Câu cảm thán và dấu chấm than: hạn chế, gần như không dùng trong tài liệu.
-- Giọng trung tính, khẳng định: "Lệnh này xóa thư mục `dist/`." thay cho "Lệnh này có lẽ sẽ xóa thư mục `dist/`." Chỉ dùng từ rào đón khi thật sự không chắc.
+- Giọng trung tính, khẳng định: "Lệnh này sẽ xóa thư mục `dist/`." thay cho "Lệnh này có lẽ sẽ xóa thư mục `dist/`." Chỉ dùng từ rào đón khi thật sự không chắc.
 
 ## 7. Quy trình viết và tự kiểm tra
 
