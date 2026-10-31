@@ -1,0 +1,3 @@
+interface:
+  display_name: "Top Down Thinking"
+  short_description: "Break a goal into testable components and steps"

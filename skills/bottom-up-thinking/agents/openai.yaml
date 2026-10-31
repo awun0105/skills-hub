@@ -1,0 +1,3 @@
+interface:
+  display_name: "Bottom Up Thinking"
+  short_description: "Infer and verify explanations from real evidence"

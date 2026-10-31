@@ -1,0 +1,3 @@
+interface:
+  display_name: "Shallow Thinking"
+  short_description: "Fast bounded reasoning with correctness checks"

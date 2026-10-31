@@ -1,0 +1,3 @@
+interface:
+  display_name: "Thinking Loop"
+  short_description: "Route and combine six thinking methods adaptively"
