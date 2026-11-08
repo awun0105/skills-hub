@@ -1,163 +1,165 @@
-# skills-hub
+<p align="center">
+  <img src="assets/skills-hub-banner.png" alt="Skills Hub — connected modules around a shared hub" width="100%">
+</p>
 
-Nơi chứa **tất cả skill** của mọi coding agent trên máy: Claude Code, Codex, Antigravity, Gemini CLI, Cursor, OpenCode, Copilot, Windsurf…
+# Skills Hub
 
-Mỗi skill chỉ có **một bản duy nhất** nằm ở đây. Agent nào cũng dùng chung bản đó, nên sửa một chỗ là mọi agent đều thấy.
+**English** · [Tiếng Việt](README.vi.md)
 
-## Cài đặt (máy mới, hoặc bạn muốn dùng bộ skill này)
+One shared home for coding-agent skills: Claude Code, Codex, Antigravity, Gemini CLI, Cursor, OpenCode, Copilot, Windsurf, and more.
 
-Cần có `git`, `python3`, và Node.js (cho `npx`).
+Keep each shared skill in one place. Agents use the same files, so an edit in the hub is available wherever that skill is linked or discovered. Skills that deliberately differ between agents remain separate.
+
+## Quick start
+
+You need Git, Python 3, and Node.js with `npx`. The optional daily sync uses a systemd user timer.
 
 ```bash
 git clone https://github.com/awun0105/skills-hub.git ~/.agents
 ~/.agents/bin/install.sh
 ```
 
-Script sẽ làm 3 việc:
-1. Clone các repo skill gốc (superpowers, gstack, ECC…) vào `~/.agents/repos/`, đúng commit đã ghi trong `repos.lock`.
-2. Cài lại các skill trong `.skill-lock.json` bằng `npx skills`, lấy thẳng từ nguồn.
-3. Tạo symlink cho những agent không tự đọc `~/.agents/skills`, cụ thể là Claude Code và Windsurf. Các agent còn lại (Codex, Cursor, Gemini CLI, Antigravity, OpenCode…) đọc thẳng thư mục này nên không cần link.
+The installer:
 
-Cuối cùng script in ra danh sách skill **không có trong repo** vì do app tự cài (xem [bên dưới](#những-gì-không-có-trong-repo)).
+1. Clones missing upstream skill repositories into `~/.agents/repos/` at the commits recorded in `repos.lock`. Existing clones are left in place.
+2. Restores missing skills listed in `.skill-lock.json` using `npx skills`.
+3. Creates missing skill symlinks for Claude Code and Windsurf when their configuration directories exist. It leaves existing destinations alone.
 
-> **Nhất định phải clone vào `~/.agents`.** Đó là thư mục mà `npx skills` và nhiều agent tự tìm đến. Nếu bạn đã có sẵn `~/.agents`, hãy đổi tên nó trước (`mv ~/.agents ~/.agents.old`), clone xong thì copy những gì cần giữ sang.
+It also lists skills supplied by external apps that this repository does not redistribute. Restart your agents after installation.
 
-Repo này dùng **đường dẫn tương đối** (`skills/x -> ../repos/...`) và `$HOME`, nên chạy được với mọi tên user.
+Clone into `~/.agents`: the installer and skill tooling use that location. If it already exists, preserve it before cloning and merge the files you need afterward. The hub uses relative links and `$HOME` rather than a fixed username.
 
----
+Agent discovery varies by tool and version. The installer treats Codex, Cursor, Gemini CLI, Antigravity, and OpenCode as direct readers of `~/.agents/skills`; check your agent's configured skill paths if a skill does not appear.
 
-## Cấu trúc
+## Repository layout
 
-```
+```text
 ~/.agents/
-├── skills/        ← HUB: mọi skill (thư mục thật, hoặc symlink vào repos/)
-├── repos/         ← các git clone gốc — không commit, ghi trong repos.lock
-├── rules/         ← rule dùng chung
-├── workflows/     ← workflow / slash command dùng chung
+├── skills/              # Shared skills: real directories or links into repos/
+├── repos/               # Upstream clones; restored from repos.lock, not committed
+├── rules/               # Shared rules
+├── workflows/           # Shared workflows and slash commands
 ├── bin/
-│   ├── install.sh              ← cài lên máy mới
-│   ├── consolidate-skills.sh   ← tìm và gom skill nằm rời rạc về hub
-│   ├── repos-lock.sh           ← ghi / khôi phục danh sách git clone
-│   └── sync-hub.sh             ← gom + commit + push (timer gọi mỗi ngày)
-├── overlays/      ← file thêm vào repo của người khác, được chép đè sau khi clone
-├── systemd/       ← timer cho sync-hub.sh
-├── repos.lock     ← danh sách repo: đường dẫn, URL, commit
-└── .skill-lock.json  ← file của `npx skills`, đừng sửa tay
-
-~/.claude/skills/<tên>  ──►  ~/.agents/skills/<tên>  ──►  ~/.agents/repos/.../<tên>
+│   ├── install.sh             # Set up the hub on a machine
+│   ├── consolidate-skills.sh  # Inspect or consolidate scattered skills
+│   ├── repos-lock.sh          # Record or restore upstream clones
+│   └── sync-hub.sh            # Consolidate, commit, and push
+├── overlays/            # Local additions applied to restored upstream clones
+├── systemd/             # Optional daily sync service and timer
+├── assets/              # README artwork
+├── repos.lock           # Upstream paths, URLs, and commits
+├── .skill-lock.json     # Source records maintained by npx skills
+├── README.md            # English documentation
+└── README.vi.md         # Vietnamese documentation
 ```
 
----
+A typical shared-skill path:
 
-## Việc hằng ngày
+```text
+~/.claude/skills/<name> → ~/.agents/skills/<name> → ~/.agents/repos/.../<name>
+```
 
-### Cài skill mới
+## Everyday use
+
+### Install a skill from a repository
 
 ```bash
-npx skills add <chủ>/<repo> --list                     # xem repo có những skill nào
-npx skills add <chủ>/<repo> --skill <tên> -g -y         # cài cho mọi agent trên máy
+npx skills add <owner>/<repo> --list
+npx skills add <owner>/<repo> --skill <name> -g -y
 ```
 
-`-g` nghĩa là cài toàn cục, vào `~/.agents/skills`. `-y` nghĩa là tự chọn mọi agent tìm thấy, không hỏi lại. Skill cài theo cách này **không được commit**: chỉ tên và nguồn được ghi vào `.skill-lock.json`, và máy khác sẽ tự cài lại từ nguồn.
+`-g` installs globally; `-y` accepts the installer's prompts. Source-managed skills are restored from the records in `.skill-lock.json` rather than redistributed as copies in this repository. The sync script updates the corresponding ignore entries.
 
-### Tự viết skill
+### Write your own skill
 
-Tạo ở `~/.agents/skills/<tên>/SKILL.md`, rồi link sang Claude Code:
+Create `~/.agents/skills/<name>/SKILL.md`. Link it into any agent directory that needs an explicit link, for example Claude Code:
 
 ```bash
-ln -s ~/.agents/skills/<tên> ~/.claude/skills/<tên>
-cd ~/.agents && git add skills/<tên> && git commit -m "Add skill <tên>" && git push
+mkdir -p ~/.claude/skills
+ln -s ~/.agents/skills/<name> ~/.claude/skills/<name>
+cd ~/.agents
+git add skills/<name>
+git commit -m "Add skill <name>"
+git push
 ```
 
-Nếu bạn nhờ agent tạo skill thì không cần làm tay. File cấu hình chung của từng agent (`~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`, `~/.gemini/GEMINI.md`) đã có hướng dẫn để agent tự làm đúng các bước trên.
+Use the hub as the source of truth instead of creating separate real copies in each agent's directory. Project-specific skills stay in their project repositories.
 
-### Sửa một skill
+### Edit a skill
 
-Sửa thẳng trong `~/.agents/skills/<tên>/`. Mọi agent dùng bản đã sửa ngay.
+Edit `~/.agents/skills/<name>/`. Agents reading that path share the change; restart an agent if it caches skills.
 
-> ⚠️ Nếu `skills/<tên>` là **symlink vào `repos/`**, tức là skill của người khác, thì phần bạn sửa nằm trong repo gốc, **không** vào git của hub, và có thể bị ghi đè khi repo gốc cập nhật. Muốn giữ bản sửa riêng thì copy ra thành thư mục thật. Lưu ý chỉ public bản sửa nếu license của skill gốc cho phép.
-> ```bash
-> cd ~/.agents/skills && cp -rL <tên> <tên>.tmp && rm <tên> && mv <tên>.tmp <tên>
-> ```
+If the directory is a symlink into `repos/`, edits belong to the upstream clone and are not captured by a hub commit. To retain them, commit to your own fork, store suitable additions in `overlays/`, or maintain a real local copy under `skills/`. Check the upstream license before redistributing a modified copy.
 
-### Kiểm tra có skill nào bị "lạc" không
-
-Đôi khi một công cụ tự cài skill thẳng vào `~/.claude/skills` thay vì vào hub. Để kiểm tra:
+### Find scattered skills
 
 ```bash
-~/.agents/bin/consolidate-skills.sh            # chỉ xem, KHÔNG thay đổi gì
-~/.agents/bin/consolidate-skills.sh --apply    # gom về hub
+~/.agents/bin/consolidate-skills.sh          # Inspect only
+~/.agents/bin/consolidate-skills.sh --apply  # Consolidate and create links
 ```
 
-| STATUS | Nghĩa | Script làm gì khi `--apply` |
+| Status | Meaning | Behavior with `--apply` |
 |---|---|---|
-| `new` | Skill thật, hub chưa có | Copy vào hub, thay bản gốc bằng symlink |
-| `dup` | Giống hệt bản trong hub | Thay bằng symlink |
-| `CONFLICT` | Cùng tên nhưng nội dung khác | **Không đụng vào.** Copy sang thư mục backup để bạn tự chọn bản giữ lại |
-| `per-host` | Skill cố ý khác nhau theo agent | Bỏ qua |
-| `ext-link` | Symlink trỏ ra ngoài hub | Bỏ qua |
+| `new` | A real skill is missing from the hub | Copy into the hub and replace its original location with a link |
+| `dup` | Content matches the hub copy | Replace the duplicate location with a link |
+| `CONFLICT` | Same name, different content | Preserve the conflict in a backup for manual resolution |
+| `per-host` | An intentional agent-specific variant | Skip |
+| `ext-link` | A link outside the managed hub | Skip |
 
-Bản gốc **không bao giờ bị xoá**, mà được chuyển vào `~/skills-backup-<ngày-giờ>/`.
+Originals moved by consolidation are kept in `~/skills-backup-<timestamp>/`.
 
-### Tự đồng bộ mỗi ngày (chỉ dành cho chủ repo)
+### Enable daily sync
+
+For maintainers with push access:
 
 ```bash
 ~/.agents/bin/install.sh --sync
 ```
 
-Lệnh này bật một systemd timer chạy lúc 21:00 và 15 phút sau khi mở máy. Mỗi lần chạy, timer gom skill lạc về hub, cập nhật `repos.lock`, rồi commit và push. Để giữ an toàn cho repo public, timer **không tự phát hành skill thật mới**, vì đó có thể là skill của bên thứ ba. Gặp trường hợp này, nó chỉ ghi `CHƯA PHÁT HÀNH: ...` vào log để bạn tự quyết.
+The systemd user timer runs at 21:00 and 15 minutes after the user service manager starts. Sync consolidates scattered skills, updates `repos.lock` and skill ignore entries, then commits and pushes changes. New real skill directories are excluded from automatic publication and logged as `CHƯA PHÁT HÀNH` so a maintainer can decide whether to publish them.
 
-Xem log: `journalctl --user -u skills-hub-sync -n 30`
+The sync script stages other repository changes as well; review pending work before running it manually.
 
-Đồng bộ tay: `~/.agents/bin/sync-hub.sh`
+```bash
+journalctl --user -u skills-hub-sync -n 30
+~/.agents/bin/sync-hub.sh
+```
 
----
+## What a clone does not include
 
-## Những gì không có trong repo
-
-| Loại | Ví dụ | Cách có lại |
+| Source | Examples | How to restore |
 |---|---|---|
-| Repo skill gốc | superpowers, gstack, ECC, OpenSpec… | `repos.lock`, `install.sh` tự clone |
-| Cài qua `npx skills` | archify, architecture-diagram, svg-diagram, supabase | `.skill-lock.json`, `install.sh` tự cài |
-| Do app/tool tự cài, không rõ license | orca-*, hf-cli, colab-operator, use-railway, computer-use… | Cài app tương ứng |
-| Sinh ra theo máy | `_gstack-command`, các link vào extension của Gemini | Chạy `./setup` của gstack, cài extension |
+| Upstream repositories | superpowers, gstack, ECC, OpenSpec | `repos.lock` and `bin/install.sh` |
+| Skills installed through `npx skills` | archify, architecture-diagram, svg-diagram, supabase | `.skill-lock.json` and `bin/install.sh` |
+| App-managed skills not redistributed here | orca-*, hf-cli, colab-operator, use-railway, computer-use | Install the relevant app or tool |
+| Machine-generated skills or extension links | `_gstack-command`, Gemini extension links | Run upstream setup or install the extension |
 
-Những skill này **vẫn có trên máy chủ repo**, chỉ không được phát hành lại. Lý do là repo public sẽ phân phối bản sao nội dung của người khác, và việc đó cần license cho phép.
+A skill being present on the maintainer's machine does not mean its contents are published in this repository. Redistribution depends on its source and license.
 
----
+## Maintenance notes
 
-## Những điều cần nhớ
+- **Preserve agent-specific variants.** Consolidation excludes `gstack`, `graphify`, and `connect-chrome` by default. Set `PER_HOST` to customize that list.
+- **Keep upstream edits reproducible.** `repos.lock` records commits, not uncommitted files. Push edits to your fork or place additions under `overlays/<repo-path>/...`; restore applies those overlays after cloning. Lock generation warns about uncommitted files without matching overlays.
+- **Review what you publish.** Stage intended paths and inspect the diff before committing. `.gitignore` excludes `.env` files, but it does not replace reviewing the staged content.
+- **Review third-party skills before use.** Skills execute through an agent's available tools and permissions.
+- **Leave project skills in their projects.** Do not consolidate a project's `.claude/skills/` into the global hub.
 
-1. **Đừng gộp skill `per-host`.** Hiện có `gstack`, `graphify` và `connect-chrome`. Mỗi agent có một bản riêng là có chủ đích, ví dụ bản Codex gọi `spawn_agent` còn bản Claude gọi Agent tool. Muốn thêm tên vào danh sách này thì đặt biến `PER_HOST`.
-2. **Thay đổi chưa commit trong `repos/` không đi theo sang máy khác.** `repos.lock` chỉ ghi commit. Có hai cách giữ phần bạn thêm vào:
-   - Repo là fork của bạn: commit và push trong chính repo đó.
-   - Repo của người khác: đặt file vào `overlays/<đường dẫn repo>/...`. `repos-lock.sh restore` sẽ chép đè chúng vào sau khi clone. Hiện có `plugin.json` của OpenSpec và skill `taskmaster` cùng plugin của claude-task-master.
+## Troubleshooting
 
-   `repos-lock.sh save` sẽ cảnh báo nếu một file chưa commit không có bản giống hệt trong `overlays/`.
-3. **Không commit bí mật.** `.gitignore` đã chặn `.env`, nhưng trước khi push bạn vẫn nên liếc qua `git status`.
-4. **Skill chạy với toàn quyền của agent.** Trước khi cài skill lạ, xem điểm đánh giá bảo mật trên `skills.sh/<chủ>/<repo>`.
-5. **Skill cấp project** (`.claude/skills/` bên trong một repo dự án) để nguyên ở đó, không gom về hub.
-
----
-
-## Khi có sự cố
-
-| Triệu chứng | Cách xử lý |
+| Symptom | What to check |
 |---|---|
-| Agent không thấy skill vừa cài | Khởi động lại agent. Kiểm tra `ls -la ~/.claude/skills/<tên>` có trỏ đúng không |
-| Symlink trong `skills/` bị hỏng | Chạy `bin/repos-lock.sh restore` (thiếu repo gốc) hoặc `bin/install.sh` |
-| `Too many levels of symbolic links` | Có vòng lặp symlink. Chạy `readlink` trên từng mắt xích, rồi thay một đầu bằng thư mục thật (lấy từ `~/skills-backup-*`) |
-| Lỡ `--apply` sai | Bản gốc nằm trong `~/skills-backup-<ngày-giờ>/<agent>/<tên>`. Xoá symlink rồi `mv` bản gốc về |
+| An agent cannot see a newly installed skill | Restart the agent and inspect its discovery paths or `ls -la ~/.claude/skills/<name>` |
+| A link under `skills/` is broken | Run `bin/repos-lock.sh restore` for missing upstream clones, or `bin/install.sh` for a full setup |
+| `Too many levels of symbolic links` | Inspect each link with `readlink`; replace one end of the cycle with the real directory from a backup |
+| Consolidation needs to be undone | Locate the original in `~/skills-backup-<timestamp>/<agent>/<name>`, remove the replacement link, and move the original back |
 
-Tìm symlink hỏng:
+Find broken links:
 
 ```bash
 find ~/.agents/skills ~/.claude/skills -maxdepth 1 -xtype l
 ```
 
----
+## Credits
 
-## Ghi công
-
-- `skills/first-principles-skill`: từ [awesome-skills/first-principles-skill](https://github.com/awesome-skills/first-principles-skill), license MIT (xem `LICENSE` trong thư mục). Bản ở đây đã được sửa (v0.2.1): thêm từ khoá và quy tắc diễn đạt tiếng Việt.
-- Các skill trong `repos/` thuộc về tác giả của từng repo, theo license của repo đó.
+- `skills/first-principles-skill` is adapted from [awesome-skills/first-principles-skill](https://github.com/awesome-skills/first-principles-skill), under the MIT license; see its `LICENSE`. The local v0.2.1 adaptation adds keywords and Vietnamese writing guidance.
+- Skills restored into `repos/` remain the work of their respective authors and follow each upstream repository's license.
