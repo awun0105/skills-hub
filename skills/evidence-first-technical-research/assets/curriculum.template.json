@@ -1,0 +1,33 @@
+{
+  "curriculum_id": "example-research-curriculum",
+  "version": "1.0.0",
+  "title": "Example: Evidence-Based Technical Curriculum",
+  "goal": "Demonstrate an evidence-grounded derivation and implementation audit of a chosen technical method",
+  "scope": "Example only; not a verified or complete scientific curriculum",
+  "audience_assumptions": ["Basic algebra; examples below are placeholders"],
+  "delivery_policy": {"lessons_per_turn": 1, "language": "follow_user", "skip_prerequisite_on_request": true},
+  "lessons": [
+    {
+      "id": "L01",
+      "unit": "Foundations",
+      "title": "Define the problem and its assumptions",
+      "prerequisites": [],
+      "learning_objectives": ["State the problem, assumptions, and observable success condition"],
+      "assessment_plan": ["Learner identifies two assumptions and a counterexample"],
+      "verification_plan": ["Read original primary source and record its exact locator before teaching"],
+      "kind": "CORE",
+      "status": "not_started"
+    },
+    {
+      "id": "L02",
+      "unit": "Implementation",
+      "title": "Trace one algorithm from paper to implementation",
+      "prerequisites": ["L01"],
+      "learning_objectives": ["Trace the executed implementation path and check one invariant"],
+      "assessment_plan": ["Learner maps a paper step to a specific function and tests a boundary case"],
+      "verification_plan": ["Pin the official repository commit and inspect call path"],
+      "kind": "CORE",
+      "status": "not_started"
+    }
+  ]
+}

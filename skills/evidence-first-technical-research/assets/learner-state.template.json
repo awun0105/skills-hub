@@ -1,0 +1,38 @@
+{
+  "curriculum_id": "example-research-curriculum",
+  "curriculum_version": "1.0.0",
+  "updated_at": "REPLACE_WITH_OBSERVED_TIMESTAMP",
+  "last_delivered_lesson_id": null,
+  "next_lesson_id": "L01",
+  "lessons": {
+    "L01": {
+      "coverage": "not_started",
+      "objectives": [
+        {
+          "objective_index": 0,
+          "proficiency": "unassessed",
+          "observed_evidence": [],
+          "uncertainty": "Template; not an assessment"
+        }
+      ],
+      "misconceptions": [],
+      "corrections_pending": []
+    },
+    "L02": {
+      "coverage": "not_started",
+      "objectives": [
+        {
+          "objective_index": 0,
+          "proficiency": "unassessed",
+          "observed_evidence": [],
+          "uncertainty": "Template; not an assessment"
+        }
+      ],
+      "misconceptions": [],
+      "corrections_pending": []
+    }
+  },
+  "preferences": {"language": "follow_user", "one_lesson_per_turn": true},
+  "unresolved_claim_ids": [],
+  "next_verification": ["Read primary sources for L01 before teaching"]
+}

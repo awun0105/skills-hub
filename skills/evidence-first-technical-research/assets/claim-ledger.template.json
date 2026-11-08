@@ -1,0 +1,31 @@
+{
+  "task": "Example: Verify original 3DGS densification claims",
+  "as_of": "2026-11-08",
+  "research_question": "What exact conditions trigger clone versus split?",
+  "sources": [
+    {
+      "id": "S1",
+      "kind": "official_code",
+      "title": "Original 3DGS implementation",
+      "url": "https://github.com/graphdeco-inria/gaussian-splatting",
+      "revision": "REPLACE_WITH_INSPECTED_COMMIT",
+      "locator": "scene/gaussian_model.py:densify_and_clone / densify_and_split",
+      "access_level": "full_code",
+      "inspected_at": "2026-11-08",
+      "notes": "Template example only. Replace with actual inspected evidence."
+    }
+  ],
+  "claims": [
+    {
+      "id": "C1",
+      "claim": "REPLACE WITH A SPECIFIC VERIFIED CLAIM",
+      "status": "UNVERIFIED",
+      "evidence": [],
+      "assumptions": [],
+      "limitations": ["Template must not be cited as evidence"],
+      "verification_actions": ["Inspect the source at a pinned commit and add locator"]
+    }
+  ],
+  "open_questions": ["What exact code revision was inspected?"],
+  "checks_performed": []
+}

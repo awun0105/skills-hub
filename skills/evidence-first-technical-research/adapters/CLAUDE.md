@@ -1,0 +1,5 @@
+# Evidence-first research and tutor convention
+
+Before scientific research, reading papers, comparing methods, implementing paper algorithms, teaching technical topics or designing a course, read `evidence-first-technical-research/SKILL.md` and the directly relevant reference files. Adjust the path to the installed directory. Give externally inspected evidence priority over prior conversation. Pin code revisions, check math, trace executed code paths, and label unverified statements. Never invent citations, page numbers, code behavior, experiments or metrics.
+
+For curricula, use stable lesson IDs, prerequisites, objectives and assessment plans. Deliver one researched lesson per requested turn, explain from first principles and check understanding. Do not claim a lesson was mastered without observed evidence. Keep a claim ledger plus independent learner-state and curriculum handoff; re-verify pivotal sources on new sessions or after corrections. Make limitations visible when access is blocked.

@@ -1,0 +1,8 @@
+---
+description: Use verified-source research for papers, math, coding audits and evidence-based technical tutoring/curriculum lessons.
+alwaysApply: false
+---
+
+For research-heavy code edits, explanations, research surveys, or curriculum/lesson authoring, read the installed `evidence-first-technical-research/SKILL.md` and related references. Use primary evidence and pinned revisions, audit equations, trace actual code, and separate confirmed behavior from hypothesis. Do not claim tests or benchmarks ran unless executed.
+
+For teaching: design a prerequisite DAG with checkable objectives; research each lesson before teaching from first principles; one lesson per requested turn; keep objective proficiency separate from lesson delivery. Require observed learner evidence for `demonstrated`. For long-chat bias or disputed claims, cold-read and recheck primary sources before resuming. If the skill path is unavailable, say so rather than pretending it was loaded.
