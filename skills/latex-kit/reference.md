@@ -45,7 +45,21 @@ Load `geometry` before latexkit (or use `margin=`) to change the page layout.
   Ours & 28.8 & 0.893 \\
 \end{lktblr}
 ```
-Also loaded: `booktabs tabularx tabularray multirow makecell longtable threeparttable`.
+### gradbars (data graphics in text and cells; docs: `assets/vendor/gradbars/docs/api.md`)
+```latex
+\gradbar[max=100, width=25mm, precision=1]{72.4}   \gradspark{3,5,2,8,6}
+\gradheat[min=0, max=1]{0.7}   \gradstack{30,50,20}
+\begin{gradtable}[width=\linewidth, header align=c]
+  \gradcolumn{method}{Method}
+  \gradcolumn[type=bar, mark=both, options={max=100, precision=1}]{score}{Score}
+  \gradcolumn[type=number, mark=best, options={better=lower}]{time}{Time / ms}
+  \gradrow{Baseline, 72.4, 18.2}
+  \gradrow{Ours, 92.7, 11.5}          % NA = missing value
+\end{gradtable}
+```
+`\UseTblrLibrary{gradbars}` is already called: gradbars columns work in `lktblr` too.
+
+Also loaded: `booktabs tabularx tabularray gradbars multirow makecell longtable threeparttable`.
 `\lkstripes` before a tabular gives zebra rows. `P{3cm}` = centered fixed-width column.
 
 ## diagram
@@ -91,9 +105,9 @@ Node styles (inside `\begin{tikzpicture}[lk]`): `process` (alias `box`), `termin
 Libraries loaded: arrows.meta positioning calc fit backgrounds matrix chains shapes.* decorations.*
 mindmap trees shadows patterns quotes angles 3d svg.path. Layers: background, edges, main, foreground.
 
-### Text diagrams (Mermaid, D2, Graphviz)
+### Diagram files (Mermaid, D2, Graphviz, draw.io)
 
-Write `diagrams/<name>.mmd`, `.d2`, `.dot` or `.gv`, then
+Write `diagrams/<name>.mmd`, `.d2`, `.dot`, `.gv` or `.drawio` (draw.io desktop exports it, cropped), then
 `\lkdiagram[max width=0.8\linewidth]{diagrams/<name>}` (aliases `\lkmermaid \lkdtwo \lkgraphviz`).
 latexmk builds the PDF through rules in `latexmkrc`; `latexkit render [-f]` does it by hand.
 Mermaid theme: `diagrams/mermaid.json`. A missing tool yields a red notice PDF instead of an error;
@@ -115,7 +129,30 @@ latexkit asset add encoder-decoder   # -> figures/encoder-decoder.tex (+ .meta.j
 Edit the `\def` parameters at the top of the copied file. Keep node names and the palette
 (`otblue otorange otteal otpurple otvermillion otyellow otgray`) as the meta file's
 `edit_contract` says. The figure's `\newcommand`, colors and TikZ libraries run; its
-`\usepackage` lines are skipped (`asset add` prints any package to add).
+`\usepackage` lines are skipped (`asset add` prints any package to add). A figure's
+`\newcommand` may reuse a document command name; images next to the file are found.
+
+### Neural-network blocks (PlotNeuralNet, assets of type `nn`)
+
+`latexkit asset list nn` → `nn-alexnet nn-lenet nn-vgg16 nn-fcn8 nn-fcn32 nn-hed nn-unet
+nn-unet-ushape nn-softmax-loss`. Or draw in the document (diagram module loads the layers):
+```latex
+\begin{tikzpicture}
+  \pic[shift={(0,0,0)}] at (0,0,0) {RightBandedBox={name=c1, caption=conv1,
+       xlabel={{"64","64"}}, zlabel=224, fill=\ConvColor, bandfill=\ConvReluColor,
+       height=36, width={2,2}, depth=36}};
+  \pic[shift={(0,0,0)}] at (c1-east) {Box={name=p1, fill=\PoolColor, opacity=0.5,
+       height=28, width=1, depth=28}};
+  \pic[shift={(2,0,0)}] at (p1-east) {Box={name=fc, caption=fc, xlabel={{"10",}},
+       fill=\SoftmaxColor, height=3, width=1.5, depth=20}};
+  \pic[shift={(1.5,0,0)}] at (fc-east) {Ball={name=sum, fill=\SumColor, radius=2.5, logo=$+$}};
+  \draw[connection] (p1-east) -- node{\midarrow} (fc-west);
+\end{tikzpicture}
+```
+Anchors: `<name>-east/-west/-north/-south/-anchor/-near/-far`. Colors: `\ConvColor \ConvReluColor
+\PoolColor \UnpoolColor \FcColor \FcReluColor \SoftmaxColor \SumColor`. Edges: `connection`,
+`copyconnection` with `\midarrow`, `\copymidarrow`. Python generator:
+`assets/vendor/plotneuralnet/pycore/tikzeng.py` (`to_head`, `to_Conv`, `to_Pool`, `to_connection`...).
 
 ## plot
 
