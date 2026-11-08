@@ -2,13 +2,37 @@
   <img src="assets/skills-hub-banner.png" alt="Skills Hub — connected modules around a shared hub" width="100%">
 </p>
 
-# Skills Hub
+<h1 align="center">Skills Hub</h1>
 
-**English** · [Tiếng Việt](README.vi.md)
+<p align="center">
+  <strong>English</strong> · <a href="README.vi.md">Tiếng Việt</a>
+</p>
 
 One shared home for coding-agent skills: Claude Code, Codex, Antigravity, Gemini CLI, Cursor, OpenCode, Copilot, Windsurf, and more.
 
 Keep each shared skill in one place. Agents use the same files, so an edit in the hub is available wherever that skill is linked or discovered. Skills that deliberately differ between agents remain separate.
+
+## Find a skill
+
+Browse the [generated skill catalog](CATALOG.md) for all published skill names, grouped by source and purpose. It includes upstream links and installation guidance, and excludes machine-only skills.
+
+| What you need | Where to start |
+|---|---|
+| Build, test, debug, or review software | ECC, superpowers, gstack |
+| Plan and deliver a project | gsd-core, OpenSpec, claude-task-master |
+| Research or analyze scientific data | scientific-agent-skills |
+| Write documents, presentations, or README files | anthropics-skills, `bilingual-readme`, `vietnamese-writing` |
+| Think through a difficult problem | `first-principles-skill`, `inquiry-and-problem-framing`, `thinking-loop` |
+| Build on Cloudflare | cloudflare-skills |
+
+Regenerate the catalog after staging skill or source-lock changes:
+
+```bash
+python3 bin/generate-catalog.py
+python3 bin/generate-catalog.py --check
+```
+
+The generator reads Git's index, so untracked local installations do not appear.
 
 ## Quick start
 
@@ -43,7 +67,8 @@ Agent discovery varies by tool and version. The installer treats Codex, Cursor, 
 │   ├── install.sh             # Set up the hub on a machine
 │   ├── consolidate-skills.sh  # Inspect or consolidate scattered skills
 │   ├── repos-lock.sh          # Record or restore upstream clones
-│   └── sync-hub.sh            # Consolidate, commit, and push
+│   ├── sync-hub.sh            # Consolidate and sync managed changes
+│   └── generate-catalog.py    # Generate the tracked skill catalog
 ├── overlays/            # Local additions applied to restored upstream clones
 ├── systemd/             # Optional daily sync service and timer
 ├── assets/              # README artwork
@@ -116,9 +141,15 @@ For maintainers with push access:
 ~/.agents/bin/install.sh --sync
 ```
 
-The systemd user timer runs at 21:00 and 15 minutes after the user service manager starts. Sync consolidates scattered skills, updates `repos.lock` and skill ignore entries, then commits and pushes changes. New real skill directories are excluded from automatic publication and logged as `CHƯA PHÁT HÀNH` so a maintainer can decide whether to publish them.
+The systemd user timer runs at 21:00 and 15 minutes after the user service manager starts. Sync consolidates scattered skills, updates `repos.lock` and skill ignore entries, then commits and pushes only `.gitignore`, `.skill-lock.json`, `repos.lock`, and changes to already tracked files under `skills/`.
 
-The sync script stages other repository changes as well; review pending work before running it manually.
+New skill paths, backups, README edits, and other repository files stay outside automatic publication. Publish those explicitly after review. Sync stops before consolidation if the index contains staged changes or the branch has unpushed commits; resolve those first.
+
+Preview consolidation and candidate commit paths without changing hub files, the index, commits, or remotes. Consolidation can change tracked skills during a real run, so inspect its proposal too:
+
+```bash
+~/.agents/bin/sync-hub.sh --dry-run
+```
 
 ```bash
 journalctl --user -u skills-hub-sync -n 30

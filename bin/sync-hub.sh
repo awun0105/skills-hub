@@ -1,49 +1,88 @@
 #!/usr/bin/env bash
-# sync-hub.sh — gom skill lạc về hub, cập nhật repos.lock, commit và push.
-# Chạy tự động bởi systemd timer skills-hub-sync (xem README); chạy tay cũng được.
+# Consolidate skills and publish only managed metadata and tracked skill changes.
+# --dry-run previews consolidation and candidate paths without writing to the hub.
 set -euo pipefail
-
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
-exec 9>"$ROOT/.git/sync-hub.lock"
-flock -n 9 || { echo "Đang có một lần sync khác chạy, bỏ qua."; exit 0; }
+case "${1:-}" in
+  '') DRY_RUN=0 ;;
+  --dry-run) DRY_RUN=1 ;;
+  *) echo 'Usage: bin/sync-hub.sh [--dry-run]' >&2; exit 2 ;;
+esac
 
-echo "== $(date '+%F %T') sync-hub"
-out="$(bin/consolidate-skills.sh --apply)"
-echo "$out" | grep -E ' (new|dup|CONFLICT|hub-back) |^Tổng|^Bản gốc|^Có CONFLICT' || true
-bin/repos-lock.sh save
+# Never include someone else's staged work or publish existing local commits.
+if ! git diff --cached --quiet; then
+  echo 'STOP: index contains staged changes; commit or unstage them before sync.' >&2
+  exit 1
+fi
+upstream="$(git rev-parse --abbrev-ref '@{u}')"
+if [[ "$(git rev-list --count "$upstream..HEAD")" != 0 ]]; then
+  echo 'STOP: branch has unpushed commits; review and push them before sync.' >&2
+  exit 1
+fi
 
-# Skill mới cài qua `npx skills` -> thêm vào khối skill-lock của .gitignore (cài lại từ nguồn).
-python3 -I - <<'PY'
-import json, re
-names = sorted(json.load(open(".skill-lock.json"))["skills"])
-gi = open(".gitignore").read()
-block = "# BEGIN skill-lock\n" + "".join(f"/skills/{n}/\n" for n in names) + "# END skill-lock"
-open(".gitignore", "w").write(re.sub(r"# BEGIN skill-lock\n.*?# END skill-lock", block, gi, flags=re.S))
+if [[ "$DRY_RUN" == 0 ]]; then
+  exec 9>"$ROOT/.git/sync-hub.lock"
+  flock -n 9 || { echo 'Another sync is running; skipping.'; exit 0; }
+  out="$(bin/consolidate-skills.sh --apply)"
+else
+  out="$(bin/consolidate-skills.sh)"
+fi
+printf '%s\n' "$out"
+
+# Build metadata in scratch space, including during preview. Existing clones and
+# skill directories are only read; repos-lock writes exclusively to scratch.
+scratch="$(mktemp -d)"
+trap 'rm -rf -- "$scratch"' EXIT
+mkdir -p "$scratch/bin"
+cp bin/repos-lock.sh "$scratch/bin/"
+ln -s "$ROOT/repos" "$scratch/repos"
+ln -s "$ROOT/skills" "$scratch/skills"
+ln -s "$ROOT/overlays" "$scratch/overlays"
+cp .gitignore "$scratch/.gitignore"
+cp .skill-lock.json "$scratch/.skill-lock.json"
+GIT_OPTIONAL_LOCKS=0 bash "$scratch/bin/repos-lock.sh" save
+python3 -I - "$scratch" <<'PY'
+import json, re, sys
+from pathlib import Path
+root = Path(sys.argv[1])
+names = sorted(json.loads((root / '.skill-lock.json').read_text())['skills'])
+if any('/' in n or '\n' in n or '\r' in n for n in names):
+    raise SystemExit('Invalid skill name in lock file')
+p = root / '.gitignore'
+block = '# BEGIN skill-lock\n' + ''.join(f'/skills/{n}/\n' for n in names) + '# END skill-lock'
+text, count = re.subn(r'# BEGIN skill-lock\n.*?# END skill-lock', lambda _: block, p.read_text(), flags=re.S)
+if count != 1:
+    raise SystemExit('Expected exactly one skill-lock block in .gitignore')
+p.write_text(text)
 PY
 
-git add -A
-# Repo public: không tự phát hành thư mục skill thật MỚI (có thể là của bên thứ ba).
-# Skill của bạn thì agent tự commit theo hướng dẫn, hoặc bạn `git add` tay.
-for name in $(git diff --cached --name-only --diff-filter=A -- skills | awk -F/ 'NF>2{print $2}' | sort -u); do
-  if [[ -d "skills/$name" && ! -L "skills/$name" ]] && ! git cat-file -e "HEAD:skills/$name" 2>/dev/null; then
-    git reset -q -- "skills/$name"
-    echo "CHƯA PHÁT HÀNH: skills/$name là skill thật mới — tự 'git add' nếu được phép public, hoặc thêm vào .gitignore."
+printf '\nCandidate commit paths (tracked skills and managed metadata only):\n'
+git diff --name-only HEAD -- skills/
+for path in .gitignore .skill-lock.json repos.lock; do
+  if ! git show "HEAD:$path" | cmp -s - "$scratch/$path"; then
+    printf '%s\n' "$path"
   fi
 done
+printf '\nUntracked skill directories are never automatically published.\n'
+if [[ "$DRY_RUN" == 1 ]]; then
+  echo 'Preview only: no hub files, index, commits, or remotes changed.'
+  echo 'Consolidation may affect tracked skills; inspect its proposal above.'
+  exit 0
+fi
+
+cp "$scratch/.gitignore" .gitignore
+cp "$scratch/repos.lock" repos.lock
+git add -- .gitignore .skill-lock.json repos.lock
+git add -u -- skills/
 if git diff --cached --quiet; then
-  echo "Không có thay đổi."
+  echo 'No managed changes.'
 else
-  added="$(git diff --cached --name-only --diff-filter=A | awk -F/ '$1=="skills"{print $2}' | sort -u | paste -sd, -)"
-  git commit -q -m "Auto-sync skills${added:+: $added}"
-  echo "Đã commit: $(git log -1 --format='%h %s')"
+  git diff --cached --check
+  git commit -m 'Auto-sync tracked skills and metadata'
+  git push
 fi
-
-if [[ -n "$(git log '@{u}..' --oneline 2>/dev/null)" ]]; then
-  git push -q && echo "Đã push."
-fi
-
-if echo "$out" | grep -q ' CONFLICT '; then
-  echo "CẢNH BÁO: có CONFLICT cần xử lý tay." >&2
+if [[ "$out" == *' CONFLICT '* ]]; then
+  echo 'WARNING: skill conflicts require manual resolution.' >&2
   exit 2
 fi

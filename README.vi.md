@@ -2,13 +2,37 @@
   <img src="assets/skills-hub-banner.png" alt="Skills Hub — các mô-đun kết nối qua một hub chung" width="100%">
 </p>
 
-# Skills Hub
+<h1 align="center">Skills Hub</h1>
 
-[English](README.md) · **Tiếng Việt**
+<p align="center">
+  <a href="README.md">English</a> · <strong>Tiếng Việt</strong>
+</p>
 
 Nơi chứa **tất cả skill** của mọi coding agent trên máy: Claude Code, Codex, Antigravity, Gemini CLI, Cursor, OpenCode, Copilot, Windsurf…
 
 Mỗi skill chỉ có **một bản duy nhất** nằm ở đây. Agent nào cũng dùng chung bản đó, nên sửa một chỗ là mọi agent đều thấy.
+
+## Tìm skill phù hợp
+
+Xem [catalog skill được tạo tự động](CATALOG.md) để tra tên skill theo nhóm chức năng và nguồn. Catalog có liên kết upstream, hướng dẫn cài đặt và không đưa các skill chỉ có trên máy vào danh sách.
+
+| Nhu cầu | Nhóm hoặc skill nên xem |
+|---|---|
+| Viết code, kiểm thử, debug, review | ECC, superpowers, gstack |
+| Lập kế hoạch và triển khai dự án | gsd-core, OpenSpec, claude-task-master |
+| Nghiên cứu và phân tích dữ liệu khoa học | scientific-agent-skills |
+| Viết tài liệu, trình chiếu, README | anthropics-skills, `bilingual-readme`, `vietnamese-writing` |
+| Phân tích vấn đề và lựa chọn hướng giải quyết | `first-principles-skill`, `inquiry-and-problem-framing`, `thinking-loop` |
+| Xây dựng ứng dụng trên Cloudflare | cloudflare-skills |
+
+Tạo lại catalog sau khi stage thay đổi skill hoặc lock file nguồn:
+
+```bash
+python3 bin/generate-catalog.py
+python3 bin/generate-catalog.py --check
+```
+
+Script đọc index của Git, nên các bản cài local chưa được track không xuất hiện trong catalog.
 
 ## Cài đặt (máy mới, hoặc bạn muốn dùng bộ skill này)
 
@@ -47,7 +71,8 @@ Repo này dùng **đường dẫn tương đối** (`skills/x -> ../repos/...`) 
 │   ├── install.sh              ← cài lên máy mới
 │   ├── consolidate-skills.sh   ← tìm và gom skill nằm rời rạc về hub
 │   ├── repos-lock.sh           ← ghi / khôi phục danh sách git clone
-│   └── sync-hub.sh             ← gom + commit + push (timer gọi mỗi ngày)
+│   ├── sync-hub.sh             ← gom + đồng bộ các thay đổi trong phạm vi quản lý
+│   └── generate-catalog.py     ← tạo catalog từ danh sách skill đã tracked
 ├── overlays/      ← file thêm vào repo của người khác, được chép đè sau khi clone
 ├── systemd/       ← timer cho sync-hub.sh
 ├── repos.lock     ← danh sách repo: đường dẫn, URL, commit
@@ -114,9 +139,15 @@ Bản gốc **không bao giờ bị xoá**, mà được chuyển vào `~/skills
 ~/.agents/bin/install.sh --sync
 ```
 
-Lệnh này bật một systemd timer chạy lúc 21:00 và 15 phút sau khi trình quản lý dịch vụ user khởi động. Mỗi lần chạy, timer gom skill lạc về hub, cập nhật `repos.lock`, rồi commit và push. Để giữ an toàn cho repo public, timer **không tự phát hành skill thật mới**, vì đó có thể là skill của bên thứ ba. Gặp trường hợp này, nó chỉ ghi `CHƯA PHÁT HÀNH: ...` vào log để bạn tự quyết.
+Lệnh này bật một systemd timer chạy lúc 21:00 và 15 phút sau khi trình quản lý dịch vụ user khởi động. Mỗi lần chạy, timer gom skill lạc về hub, cập nhật `repos.lock` và các mục ignore, rồi chỉ commit/push `.gitignore`, `.skill-lock.json`, `repos.lock` cùng thay đổi của các file đã tracked trong `skills/`.
 
-Script cũng stage các thay đổi khác trong repo; hãy kiểm tra phần việc đang dở trước khi chạy đồng bộ tay.
+Đường dẫn skill mới, backup, thay đổi README và các file khác không được tự phát hành. Những phần này cần được review và commit riêng. Script dừng trước bước gom skill nếu index đang có thay đổi staged hoặc nhánh có commit chưa push; cần xử lý các phần đó trước.
+
+Xem trước đề xuất gom skill và các đường dẫn dự kiến commit mà không sửa file trong hub, index, commit hay remote. Bước gom thực tế có thể làm thay đổi skill đã tracked, vì vậy cần đọc cả đề xuất gom:
+
+```bash
+~/.agents/bin/sync-hub.sh --dry-run
+```
 
 Xem log: `journalctl --user -u skills-hub-sync -n 30`
 
