@@ -21,7 +21,7 @@ Xem [catalog skill được tạo tự động](CATALOG.md) để tra tên skill
 | Viết code, kiểm thử, debug, review | ECC, superpowers, gstack |
 | Lập kế hoạch và triển khai dự án | gsd-core, OpenSpec, claude-task-master |
 | Nghiên cứu và phân tích dữ liệu khoa học | scientific-agent-skills |
-| Viết tài liệu, trình chiếu, README | anthropics-skills, `bilingual-readme`, `vietnamese-writing` |
+| Viết tài liệu, trình chiếu, README | anthropics-skills, `bilingual-readme` |
 | Phân tích vấn đề và lựa chọn hướng giải quyết | `first-principles-skill`, `inquiry-and-problem-framing`, `thinking-loop` |
 | Xây dựng ứng dụng trên Cloudflare | cloudflare-skills |
 

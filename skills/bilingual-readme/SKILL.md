@@ -15,8 +15,6 @@ Fills the templates from [awun0105/Best-Readme-Template](https://github.com/awun
 
 `sync-templates.sh` refreshes `templates/` from the GitHub repo (run it when the user says the templates changed). `check_readme.py` checks the result.
 
-**Vietnamese text follows the `vietnamese-writing` skill** (clear, natural, full sentences, no personal pronouns). Load it before writing the Vietnamese files.
-
 ## 1. Decide the shape
 
 - **File names.** Default, as in the template repo: `README.md` in English and `README_VN.md` in Vietnamese, each linking to the other on the line under the title (`[Tiếng Việt: README_VN.md](README_VN.md)` / `[English: README.md](README.md)`). If the repo already has a convention (e.g. `README.md` in Vietnamese + `README.en.md`) or the user named a primary language, follow that instead and keep the existing file names so links elsewhere don't break.
@@ -61,7 +59,7 @@ Rules:
    - Repository Structure lists the real top-level folders and files that matter, one line each.
    - Icon-free: no emoji in headings or lists (the templates are designed without icons).
    - Plain, direct English; short paragraphs; one idea per sentence.
-3. Write the **Vietnamese** README with the same sections, facts and commands, using the Vietnamese template's headings. Write it in natural Vietnamese following `vietnamese-writing` — do not translate the English sentence by sentence. Keep commands, code, paths and product names unchanged; Vietnamese anchors in the Table of Contents keep their diacritics (`#hướng-dẫn-bắt-đầu`).
+3. Write the **Vietnamese** README with the same sections, facts and commands, using the Vietnamese template's headings. Write it in natural Vietnamese — do not translate the English sentence by sentence. Keep commands, code, paths and product names unchanged; Vietnamese anchors in the Table of Contents keep their diacritics (`#hướng-dẫn-bắt-đầu`).
 4. If the user wants a banner or the repo has a logo, use the template's logo slot (centred under the title). The `repo-banner` skill makes one.
 5. For the docs suite: same process per page, EN and VN; `docs/README.md` links only to pages that exist; each page ends with its "Back to" link.
 
@@ -69,11 +67,9 @@ Rules:
 
 ```bash
 python3 ~/.agents/skills/bilingual-readme/check_readme.py README.md README_VN.md docs/
-python3 ~/.agents/skills/vietnamese-writing/check_pronouns.py README_VN.md docs/VN/
 ```
 
 - `check_readme.py` reports leftover placeholders and markers, instruction blocks, italic notes, broken `#anchors` (GitHub slug rules), links to missing files, emoji in headings, and EN/VN files with a different number of sections. Items marked "?" can be intentional (e.g. `[topic]` inside a sample prompt) — look at each.
-- `check_pronouns.py` lists personal pronouns in the Vietnamese text; rewrite each one.
 - Read both READMEs top to bottom once as a newcomer: is anything said twice? Is any section there only because the template had it? Could a paragraph be one sentence? Cut until the answer is no. Do the two languages say the same things?
 - If the repo is on GitHub and pushed, confirm the rendered page (`gh api repos/<owner>/<repo>/readme -H "Accept: application/vnd.github.html"`) shows the images and every TOC link resolves.
 

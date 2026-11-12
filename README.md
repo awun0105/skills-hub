@@ -21,7 +21,7 @@ Browse the [generated skill catalog](CATALOG.md) for all published skill names, 
 | Build, test, debug, or review software | ECC, superpowers, gstack |
 | Plan and deliver a project | gsd-core, OpenSpec, claude-task-master |
 | Research or analyze scientific data | scientific-agent-skills |
-| Write documents, presentations, or README files | anthropics-skills, `bilingual-readme`, `vietnamese-writing` |
+| Write documents, presentations, or README files | anthropics-skills, `bilingual-readme` |
 | Think through a difficult problem | `first-principles-skill`, `inquiry-and-problem-framing`, `thinking-loop` |
 | Build on Cloudflare | cloudflare-skills |
 
