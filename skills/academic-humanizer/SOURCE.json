@@ -1,0 +1,17 @@
+{
+  "repository": "https://github.com/AIScientists-Dev/academic-humanizer",
+  "commit": "94b88b23703bed7df507acae7d6d5876209a0cdf",
+  "adaptation": "Moved version and compatibility to metadata for Codex skill schema. Original entrypoint preserved in upstream/SKILL.md.",
+  "upstream_sha256": {
+    ".gitignore": "cf237c7aff44efbe6e502e645c3e06da03a69d7bdeb43392108ef3348143417e",
+    "LICENSE": "95201f07cd5d4454f205a53a65337cbe00298a4d21a4e68a1fc516958e7cdaf9",
+    "README.md": "ed40692dbee51ed2f2c53a02c7c34772ce23f94cab2394877544e98c0b445b54",
+    "SKILL.md": "1f4501cb7331cffe9018960f8db045c719eea0658ce04e4af5e273ee59785a9c",
+    "assets/banner.svg": "e3a332cac2dcb74c57137ed29231bc154534191827f1d8488201440e7e6803cb",
+    "assets/rednote-zh.png": "cf1ada64d95deef03b484e5d27421fd47a5591ea255aceedf955d4af3d43eb53",
+    "assets/rednote-zh.svg": "935e4c7d9c2606a652fc5710dd4b33a087a00e08d93aa6eba3a772bbe1a7a153",
+    "assets/x-en.png": "016424a96666490e96802b9900fd6047f1297e313bcd526cdef03c6c15659615",
+    "assets/x-en.svg": "7b699c6b14a6be52eb0722db513e52156f814b7d0b17f50a7fe01171abba5f01",
+    "examples/before-after.md": "60e73dfa2bab743998af2ed389b9afffa38e2c63e7248fca48bae32a19458a5e"
+  }
+}
