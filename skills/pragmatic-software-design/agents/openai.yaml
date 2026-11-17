@@ -1,0 +1,4 @@
+interface:
+  display_name: "Pragmatic Software Design"
+  short_description: "Readable code, consistent structure, justified design"
+  default_prompt: "Use $pragmatic-software-design to implement this change with clear names, consistent structure, and only the design complexity the requirements justify."
