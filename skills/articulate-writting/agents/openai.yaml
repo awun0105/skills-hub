@@ -1,0 +1,4 @@
+interface:
+  display_name: "Viết tiếng Việt rõ ràng, mạch lạc"
+  short_description: "Triển khai ý đầy đủ, viết câu và đoạn dễ hiểu"
+  default_prompt: "Dùng $articulate-writting để viết hoặc biên tập nội dung này bằng tiếng Việt, triển khai đầy đủ các ý và giải thích rõ mối liên hệ giữa chúng."
