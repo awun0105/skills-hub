@@ -13,15 +13,43 @@ named module. `gallery/gallery.pdf` in the kit shows each one rendered next to i
 |---|---|---|
 | `lang` | `vi` (default), `en` | babel language, box titles, `\cref` names, theorem names |
 | modules | `table diagram plot code box math algo science`, `all`, `none` | default on: table, diagram, code, box, math |
-| `accent` | HTML hex, default `1F4E79` | main color (`accent`) |
-| `style` | `modern` (default), `plain` | colored sans-serif headings or class defaults |
+| `accent` | HTML hex, default `1F4E79` (`guide`: `344F1E`) | main color (`accent`) |
+| `style` | `modern` (package default), `plain`, `guide` | sans-serif headings, class defaults, or Latin Modern handout layout |
+| `font` | `noto`, `lm` | `guide` defaults to `lm`, other styles to `noto` (LuaLaTeX/XeLaTeX) |
 | `float` | `auto` (default), `here` | `here` = every figure/table placed `[H]` |
 | `parskip` | flag | blank line between paragraphs |
-| `margin` | length (default `2.5cm`), `none` | `none` keeps the class layout |
+| `margin` | length (default `2.5cm`), `none` | `guide`: left/right 2.2 cm, top 2.9 cm, bottom 2.7 cm; `none` keeps the class layout |
 | `bib`, `bibfile` | `natbib` (default), `biblatex`, `none`; file name `references` | `\lkbibliography` prints it |
 | `minted` | flag | Pygments highlighting (needs `-shell-escape`; `latexkit new --minted` sets it up) |
 
 Load `geometry` before latexkit (or use `margin=`) to change the page layout.
+
+## Guide style
+
+`latexkit new notes|report|proposal|book|letter` selects `style=guide` with a 12pt class.
+The package option alone does not change the class font size: use `\documentclass[12pt]{...}`.
+It provides serif headings, green rules in headers/footers, Roman article sections,
+framed captions and note boxes with an icon tab. No organisation branding is included.
+
+```latex
+\usepackage[lang=vi, style=guide, box, code]{latexkit}
+\lkheader{Short document title}{Author} % default: \title and \author
+\lkfooter{email@example.com}           % default: empty; page number on the right
+% Optional title-block fields:
+\institution[Optional tagline]{Research group}
+% \lklogo{images/logo}
+\begin{lkpanel}{Explanation} A worked step or a result. \end{lkpanel}
+\begin{lkprompt}{Review prompt}
+Explain the assumptions and cite the supporting evidence.
+\end{lkprompt}
+```
+
+`lkpanel` needs `box`; `lkprompt` needs `code`. Guide cards (`cardgray`, `cardblue`,
+`cardgreen`, `cardorange`, `cardkey`) accept a text width, e.g. `cardblue=3cm`.
+Icons use Font Awesome when installed and a bundled TikZ fallback otherwise.
+CV uses Latin Modern 11pt and compact margins; the letter combines the gray name band
+with the guide body and footer. Their default author is generic (`Nguyễn Minh An` /
+`Alex Nguyen`); `-a` overrides it. Replace all bracketed fields before sending.
 
 ## table
 
@@ -180,6 +208,33 @@ save(fig, "psnr")                     # -> figures/psnr.pdf
 ```
 Run `latexkit plot` (uses `uv run --with matplotlib` when uv exists), then `\lkfig{psnr}{Caption}{fig:psnr}`.
 
+### figures4papers style (paper figures with a "proposed vs. baselines" color story)
+
+Palette and look from figures4papers (Chen Liu, CC BY-NC 4.0 — credit it, no commercial use).
+Full guide: `figures4papers.md` next to this file.
+
+- pgfplots: `axis[lkf4p]` (lines, left/bottom axes only, no grid), `axis[lkf4pbar]` (bars with black
+  edges; baselines light red/green, give the proposed series `fill=f4pblue, draw=black`), hatch a bar
+  with `f4phatch`. Colors: `f4pblue f4pbluelight f4pgreenA f4pgreenB f4pgreenC f4predA f4predB f4pred
+  f4pgray f4pteal f4pviolet f4pmagenta f4pgold`.
+- matplotlib: `plots/f4p.py` (copied by `latexkit new` with the plot module, or by `asset add`):
+  ```python
+  from f4p import PALETTE, LARGE, COMPACT, FigureStyle, apply_publication_style, finalize_figure
+  from f4p import make_grouped_bar, make_trend, make_heatmap, make_radar, legend_panel, alpha_ramp, tight_ylim
+  apply_publication_style(LARGE)   # LARGE: font 24 / spines 3 (big bars); COMPACT: 15 / 2
+  ...
+  finalize_figure(fig, "name")     # -> figures/name.pdf (tight_layout pad=2, 300 dpi, TrueType fonts)
+  ```
+  Or only the rcParams: `use_style("figures4papers")` (+ `"figures4papers-large"`).
+- Ready-made scripts (type `plot`): `latexkit asset list plot` → `latexkit asset add <id> [--name x]`
+  → `plots/<id>.py`; replace the example numbers at its top, `latexkit plot`, then
+  `\lkfig[1]{figures/<id>}{Caption}{fig:x}`. Ids: `f4p-bars-comparison` (metrics side by side + legend
+  panel), `f4p-bars-ablation` (horizontal, opacity ramp), `f4p-bars-grouped` (hatched, values on top),
+  `f4p-bars-panels` (one panel per category), `f4p-bars-log` (speed, log axis), `f4p-trend-cumulative`
+  (areas over months + event arrows), `f4p-trend-panels` (train/val bands + legend panel),
+  `f4p-lines-sweep`, `f4p-lines-gradient` (fading curves), `f4p-radar` (per-benchmark scales),
+  `f4p-heatmap` (annotated counts), `f4p-sphere` (concept: points on a sphere).
+
 ## code
 
 ```latex
@@ -231,7 +286,7 @@ Both need `texlive-science`; without it the document still compiles and shows a 
 | `poster` | tikzposter A0 | `\begin{columns}\column{0.33}\block{Title}{body}...\end{columns}`; color style `latexkit` uses `accent` |
 | `exam` | exam | `\question[2]`, `\part[1]`, `\begin{choices}\choice ...\CorrectChoice`, `\begin{solution}`; uncomment `\printanswers` for the answer key (writing lines are hidden there) |
 | `cv` | article + latexkit-cv | one column, plain text order for applicant tracking systems |
-| `letter` | article + latexkit-cv | gray header band, date, recipient, subject, body, closing |
+| `letter` | article + latexkit-cv, guide | gray name band, date, recipient, body, closing, ruled footer |
 
 ### latexkit-cv (cv, letter)
 ```latex
@@ -239,7 +294,7 @@ Both need `texlive-science`; without it the document still compiles and shows a 
 \cvsection{Experience}
 \cventry{Company}{City}{Role}{2024 -- now}
 \begin{cvitems} \item Built ... \end{cvitems}
-\cvproject{Project}{PyTorch, FastAPI}{2025}
+\cvproject{Project}{Role / PyTorch, FastAPI}{2025} % tools on a separate line
 \cvskill{Languages}{Python, C++}
 \letterheader{Jane Doe}{email@example.com, City}      % letter: gray band
 ```

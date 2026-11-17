@@ -1,0 +1,1 @@
+/home/lqaq/.agents/repos/gstack/verify/SKILL.md
